@@ -15,65 +15,101 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 // query git for the the SHA, Tag and commit count. Use these to automate versioning.
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 def gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
 def gitCommitCount =
-        Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
+    Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '22.0.1'
+  compileSdkVersion 23
+  buildToolsVersion '23.0.2'
 
-    defaultConfig {
-        applicationId "io.plaidapp"
-        minSdkVersion 21
-        targetSdkVersion 23
-        versionCode gitCommitCount
-        versionName gitTag
-        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
-        buildConfigField "String", "DRIBBBLE_CLIENT_ID", "\"${dribbble_client_id}\""
-        buildConfigField "String", "DRIBBBLE_CLIENT_SECRET", "\"${dribbble_client_secret}\""
-        buildConfigField "String",
-                "DRIBBBLE_CLIENT_ACCESS_TOKEN", "\"${dribbble_client_access_token}\""
-        buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
-        buildConfigField "String",
-                "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
-        buildConfigField "String",
-                "PROCUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
-    }
-    buildTypes {
-        release {
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
+  defaultConfig {
+    applicationId "io.plaidapp"
+    minSdkVersion 21
+    targetSdkVersion 23
+    versionCode gitCommitCount
+    versionName gitTag
+    buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
+    buildConfigField "String", "DRIBBBLE_CLIENT_ID", "\"${dribbble_client_id}\""
+    buildConfigField "String", "DRIBBBLE_CLIENT_SECRET", "\"${dribbble_client_secret}\""
+    buildConfigField "String",
+        "DRIBBBLE_CLIENT_ACCESS_TOKEN", "\"${dribbble_client_access_token}\""
+    buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
+    buildConfigField "String",
+        "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
+    buildConfigField "String",
+        "PROCUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
+  }
+  buildTypes {
+    release {}
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+  sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+  }
+}
+
+kapt {
+  generateStubs = true
 }
 
 repositories {
-    jcenter()
+  jcenter()
+  mavenCentral()
 }
 
 ext {
-    archivesBaseName = "plaid-${android.defaultConfig.versionName}"
-    supportLibVersion = '23.1.0'
+  archivesBaseName = "plaid-${android.defaultConfig.versionName}"
+  supportLibVersion = '23.1.0'
+  sqlbriteDao = '0.4.1'
 }
 
 dependencies {
-    compile "com.android.support:support-v4:${supportLibVersion}"
-    compile "com.android.support:palette-v7:${supportLibVersion}"
-    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
-    compile "com.android.support:cardview-v7:${supportLibVersion}"
-    compile "com.android.support:design:${supportLibVersion}"
-    compile "com.android.support:customtabs:${supportLibVersion}"
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.squareup.okhttp:okhttp:2.4.0'
-    compile 'com.github.bumptech.glide:glide:3.6.1'
-    compile 'com.github.bumptech.glide:okhttp-integration:1.3.0'
-    compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'org.jsoup:jsoup:1.8.3'
-    compile project(':bypass')
+  compile "com.android.support:support-v4:${supportLibVersion}"
+  compile "com.android.support:palette-v7:${supportLibVersion}"
+  compile "com.android.support:recyclerview-v7:${supportLibVersion}"
+  compile "com.android.support:cardview-v7:${supportLibVersion}"
+  compile "com.android.support:design:${supportLibVersion}"
+  compile "com.android.support:customtabs:${supportLibVersion}"
+  compile 'com.squareup.retrofit:retrofit:1.9.0'
+  compile 'com.squareup.okhttp:okhttp:2.4.0'
+  compile 'com.github.bumptech.glide:glide:3.6.1'
+  compile 'com.github.bumptech.glide:okhttp-integration:1.3.0'
+  compile 'com.jakewharton:butterknife:7.0.1'
+  compile 'org.jsoup:jsoup:1.8.3'
+  compile project(':bypass')
+
+  // Kotlin
+  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  // Third party libs
+  compile 'io.reactivex:rxjava:1.0.15'
+  compile 'com.f2prateek.rx.preferences:rx-preferences:1.0.1'
+
+  // Database
+  compile 'com.squareup.sqlbrite:sqlbrite:0.4.1'
+  compile "com.hannesdorfmann.sqlbrite:dao:${sqlbriteDao}"
+  compile "com.hannesdorfmann.sqlbrite:annotations:${sqlbriteDao}"
+  kapt "com.hannesdorfmann.sqlbrite:object-mapper:${sqlbriteDao}"
+
+  // Test dependencies
+  testCompile 'org.robolectric:robolectric:3.0'
+  testCompile 'org.mockito:mockito-core:2.0.31-beta'
+  testCompile 'junit:junit:4.12'
+}
+buildscript {
+  ext.kotlin_version = '1.0.0-beta-1103'
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
 }
