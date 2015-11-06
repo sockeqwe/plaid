@@ -1,10 +1,11 @@
-package com.hannesdorfmann.data.source
+package com.hannesdorfmann.data.backend
 
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.hannesdorfmann.sqlbrite.dao.Dao
 import com.squareup.sqlbrite.BriteDatabase
+import com.squareup.sqlbrite.QueryObservable
 import rx.Observable
 
 /**
@@ -16,7 +17,7 @@ import rx.Observable
 class AccessTokenDaoImpl : Dao(), AccessTokenDao {
 
     companion object COL {
-        const val SOURCE_ID = "sourceId"
+        const val BACKEND_ID = "backendId"
         const val TOKEN = "aToken"
     }
 
@@ -24,7 +25,7 @@ class AccessTokenDaoImpl : Dao(), AccessTokenDao {
 
     override fun createTable(database: SQLiteDatabase?) {
         CREATE_TABLE(TABLE,
-                "${SOURCE_ID} INTEGER PRIMARY KEY NOT NULL",
+                "${BACKEND_ID} INTEGER PRIMARY KEY NOT NULL",
                 "${TOKEN} TEXT NOT NULL"
         ).execute(database)
     }
@@ -33,22 +34,24 @@ class AccessTokenDaoImpl : Dao(), AccessTokenDao {
 
     }
 
-    override fun insertOrUpdate(sourceId: Long, accessToken: String): Observable<Long> {
+    override fun insertOrUpdate(backendId: Int, accessToken: String): Observable<Int> {
         val cv = ContentValues()
-        cv.put(SOURCE_ID, sourceId)
+        cv.put(BACKEND_ID, backendId)
         cv.put(TOKEN, accessToken)
-        return insert(TABLE, cv, SQLiteDatabase.CONFLICT_REPLACE)
+        return insert(TABLE, cv, SQLiteDatabase.CONFLICT_REPLACE).map { it.toInt() }
     }
 
-    override fun delete(sourceId: Long): Observable<Int> {
-        return delete(TABLE, "${SOURCE_ID} = ?", sourceId.toString())
+    override fun delete(backendId: Int): Observable<Int> {
+        return delete(TABLE, "${BACKEND_ID} = ?", backendId.toString())
     }
 
-    override fun getAccessTokenForSource(sourceId: Long): Observable<String> {
-        return query(SELECT(TOKEN).FROM(TABLE).WHERE("${SOURCE_ID} = ?"))
-                .args(sourceId.toString())
+    override fun getAccessTokenForBackend(backendId: Int): Observable<String> {
+        return query(
+                SELECT(TOKEN).FROM(TABLE).WHERE("${BACKEND_ID} = ?"))
+                .args(backendId.toString())
                 .run()
                 .mapToOneOrDefault({ cursor -> cursor.getString(0) }, null)
+
     }
 
     override fun clear(): Observable<Int> {

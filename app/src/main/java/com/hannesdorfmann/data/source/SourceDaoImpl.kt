@@ -17,6 +17,7 @@ class SourceDaoImpl : Dao(), SourceDao {
         const val ORDER = "orderPosition"
         const val ENABLED = "enabled"
         const val AUTH_REQUIRED = "authRequired"
+        const val BACKEND_ID = "backendId"
     }
 
 
@@ -25,10 +26,11 @@ class SourceDaoImpl : Dao(), SourceDao {
     override fun createTable(database: SQLiteDatabase?) {
         CREATE_TABLE(
                 TABLE,
-                "${COL.ID} INTEGER PRIMARY KEY NOT NULL",
+                "${COL.ID} INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL",
                 "${COL.ENABLED} BOOLEAN",
                 "${COL.AUTH_REQUIRED} BOOLEAN",
-                "${COL.ORDER} INTEGER")
+                "${COL.ORDER} INTEGER",
+                "${COL.BACKEND_ID} INTEGER NOT NULL")
                 .execute(database)
     }
 
@@ -37,23 +39,23 @@ class SourceDaoImpl : Dao(), SourceDao {
 
     override fun getAllSources(): Observable<List<Source>> {
         return query(
-                SELECT(COL.ID, COL.ENABLED, COL.ORDER)
+                SELECT(ID, ENABLED, ORDER, AUTH_REQUIRED, BACKEND_ID)
                         .FROM(TABLE)
-                        .ORDER_BY(COL.ORDER)
+                        .ORDER_BY(ORDER)
         ).run().mapToList(SourceMapper.MAPPER)
     }
 
     override fun getEnabledSources(): Observable<List<Source>> {
         return query(
-                SELECT(COL.ID, COL.ENABLED, COL.ORDER)
-                        .FROM(TABLE).WHERE("${COL.ENABLED} = 1")
-                        .ORDER_BY(COL.ORDER)
+                SELECT(ID, ENABLED, ORDER, AUTH_REQUIRED, BACKEND_ID)
+                        .FROM(TABLE).WHERE("${ENABLED} = 1")
+                        .ORDER_BY(ORDER)
         ).run().mapToList(SourceMapper.MAPPER)
     }
 
     override fun getById(id: Long): Observable<Source?> {
         return query(
-                SELECT(COL.ID, COL.ENABLED, COL.ORDER)
+                SELECT(ID, ENABLED, ORDER, AUTH_REQUIRED, BACKEND_ID)
                         .FROM(TABLE)
                         .WHERE("${COL.ID} = ?")
         ).args(id.toString())
@@ -62,11 +64,17 @@ class SourceDaoImpl : Dao(), SourceDao {
     }
 
     override fun insert(source: Source): Observable<Long> {
-        val cv = SourceMapper.contentValues()
-                .id(source.id).enabled(source.enabled)
-                .order(source.order)
+        val builder = SourceMapper.contentValues();
+
+        // NO id set, so use sql AUTO_INCREMENT
+        if (source.id != Source.UNKNOWN_ID) builder.id(source.id).enabled(source.enabled)
+
+        val cv = builder.order(source.order)
+                .authenticationRequired(source.authenticationRequired)
+                .backendId(source.backendId)
                 .build()
-        return insert(TABLE, cv)
+
+        return insert(TABLE, cv).doOnNext { source.id = it } // set the id correctly in case of assigned by AUTO_INCREMENT
     }
 
     override fun update(id: Long, order: Int, enabled: Boolean): Observable<Int> {

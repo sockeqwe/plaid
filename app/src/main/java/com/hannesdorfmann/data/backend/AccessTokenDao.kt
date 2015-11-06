@@ -1,4 +1,4 @@
-package com.hannesdorfmann.data.source
+package com.hannesdorfmann.data.backend
 
 import rx.Observable
 
@@ -11,17 +11,17 @@ interface AccessTokenDao {
     /**
      * Add or update an access token
      */
-    fun insertOrUpdate(sourceId: Long, accessToken: String): Observable<Long>
+    fun insertOrUpdate(backendId: Int, accessToken: String): Observable<Int>
 
     /**
      * Deletes an access token for the given Source
      */
-    fun delete(sourceId: Long): Observable<Int>
+    fun delete(backendId: Int): Observable<Int>
 
     /**
      * Get the AccessToken for the given Source
      */
-    fun getAccessTokenForSource(sourceId: Long): Observable<String>
+    fun getAccessTokenForBackend(backendId: Int): Observable<String>
 
     /**
      * Delete all AccessTokens

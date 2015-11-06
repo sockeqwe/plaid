@@ -1,4 +1,4 @@
-package com.hannesdorfmann.data.source
+package com.hannesdorfmann.data.backend
 
 import android.support.annotation.IntDef
 

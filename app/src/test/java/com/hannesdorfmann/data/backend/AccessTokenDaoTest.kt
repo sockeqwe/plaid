@@ -1,5 +1,6 @@
-package com.hannesdorfmann.data.source
+package com.hannesdorfmann.data.backend
 
+import com.hannesdorfmann.data.backend.AccessTokenDaoImpl
 import com.hannesdorfmann.sqlbrite.dao.DaoManager
 import io.plaidapp.BuildConfig
 import org.junit.*
@@ -48,57 +49,57 @@ class AccessTokenDaoTest {
 
         clearDatabase()
 
-        val id = 42L
+        val id = 42
         val token = "myToken"
 
         // Insert
-        val insertSubscriber = TestSubscriber<Long>()
+        val insertSubscriber = TestSubscriber<Int>()
         dao.insertOrUpdate(id, token).subscribe(insertSubscriber)
         insertSubscriber.assertNoErrors()
         insertSubscriber.assertCompleted()
         insertSubscriber.assertValue(id)
         insertSubscriber.unsubscribe()
 
-        val queriedToken = dao.getAccessTokenForSource(id).toBlocking().first()
+        val queriedToken = dao.getAccessTokenForBackend(id).toBlocking().first()
         assertEquals(token, queriedToken)
 
 
         // Update
         val updatedToken = "updatedToken"
-        val updateSubscriber = TestSubscriber<Long>()
+        val updateSubscriber = TestSubscriber<Int>()
         dao.insertOrUpdate(id, updatedToken).subscribe(updateSubscriber)
         updateSubscriber.assertNoErrors()
         updateSubscriber.assertCompleted()
         updateSubscriber.assertValue(id)
         updateSubscriber.unsubscribe()
 
-        val requeriedToken = dao.getAccessTokenForSource(id).toBlocking().first()
+        val requeriedToken = dao.getAccessTokenForBackend(id).toBlocking().first()
         assertEquals(updatedToken, requeriedToken)
 
 
         // Query unknown
-        val unknownToken = dao.getAccessTokenForSource(345).toBlocking().first()
+        val unknownToken = dao.getAccessTokenForBackend(345).toBlocking().first()
         assertNull(unknownToken)
     }
 
     @Test fun delete() {
 
-        val id1 = 42L
+        val id1 = 42
         val token1 = "firstToken"
 
 
-        val id2 = 23L
+        val id2 = 23
         val token2 = "secondToken"
 
         // Insert
-        val insertSubscriber1 = TestSubscriber<Long>()
+        val insertSubscriber1 = TestSubscriber<Int>()
         dao.insertOrUpdate(id1, token1).subscribe(insertSubscriber1)
         insertSubscriber1.assertNoErrors()
         insertSubscriber1.assertCompleted()
         insertSubscriber1.assertValue(id1)
         insertSubscriber1.unsubscribe()
 
-        val insertSubscriber2 = TestSubscriber<Long>()
+        val insertSubscriber2 = TestSubscriber<Int>()
         dao.insertOrUpdate(id2, token2).subscribe(insertSubscriber2)
         insertSubscriber2.assertNoErrors()
         insertSubscriber2.assertCompleted()
@@ -106,10 +107,10 @@ class AccessTokenDaoTest {
         insertSubscriber2.unsubscribe()
 
         // Query
-        var queriedToken1 = dao.getAccessTokenForSource(id1).toBlocking().first()
+        var queriedToken1 = dao.getAccessTokenForBackend(id1).toBlocking().first()
         assertEquals(token1, queriedToken1)
 
-        var queriedToken2 = dao.getAccessTokenForSource(id2).toBlocking().first()
+        var queriedToken2 = dao.getAccessTokenForBackend(id2).toBlocking().first()
         assertEquals(token2, queriedToken2)
 
         // Delete
@@ -119,10 +120,10 @@ class AccessTokenDaoTest {
         deleteSubscriber.assertCompleted()
         deleteSubscriber.assertValue(1)
 
-        queriedToken1 = dao.getAccessTokenForSource(id1).toBlocking().first()
+        queriedToken1 = dao.getAccessTokenForBackend(id1).toBlocking().first()
         assertNull(queriedToken1)
 
-        queriedToken2 = dao.getAccessTokenForSource(id2).toBlocking().first()
+        queriedToken2 = dao.getAccessTokenForBackend(id2).toBlocking().first()
         assertEquals(token2, queriedToken2)
 
     }
