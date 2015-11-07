@@ -1,6 +1,5 @@
 package com.hannesdorfmann.data.source
 
-import com.hannesdorfmann.data.backend.SourceProvider
 import com.hannesdorfmann.sqlbrite.dao.DaoManager
 import io.plaidapp.BuildConfig
 import org.junit.*
