@@ -12,12 +12,21 @@ import com.hannesdorfmann.sqlbrite.objectmapper.annotation.ObjectMappable
 @ObjectMappable
 class Source() { // Unfortunately data class not supported yet by sqlbrite-dao
 
-    companion object ID {
+    object ID {
         internal const val UNKNOWN_ID = -1L
+        const val DRIBBBLE_POPULAR = 0
+        const val DRIBBLE_FOLLOWING = 1
+        const val DRIBBLE_MY_SHOTS = 2
+        const val DRIBBLE_MY_LIKES = 3
+        const val DRIBBLE_RECENT = 4
+        const val DRIBBLE_DEBUTS = 5
+        const val DRIBBLE_ANIMATED = 6
+        const val DESIGNER_NEWS_POPULAR = 7
+        const val DESIGNER_NEWS_RECENT = 8
     }
 
     @Column(SourceDaoImpl.COL.ID)
-    var id: Long = UNKNOWN_ID
+    var id: Long = ID.UNKNOWN_ID
 
     @Column(SourceDaoImpl.COL.ORDER)
     var order: Int = 0
@@ -31,7 +40,7 @@ class Source() { // Unfortunately data class not supported yet by sqlbrite-dao
     @Column(SourceDaoImpl.COL.BACKEND_ID)
     var backendId: Int = -1
 
-    constructor(id: Long = UNKNOWN_ID, order: Int, enabled: Boolean, backendId: Int, authenticationRequired: Boolean) : this() {
+    constructor(id: Long = ID.UNKNOWN_ID, order: Int, enabled: Boolean, backendId: Int, authenticationRequired: Boolean) : this() {
         this.id = id
         this.order = order
         this.enabled = enabled

@@ -12,7 +12,7 @@ import rx.Observable
 class SourceDaoImpl : Dao(), SourceDao {
 
 
-    companion object COL {
+    object COL {
         const val ID = "id"
         const val ORDER = "orderPosition"
         const val ENABLED = "enabled"
@@ -39,23 +39,23 @@ class SourceDaoImpl : Dao(), SourceDao {
 
     override fun getAllSources(): Observable<List<Source>> {
         return query(
-                SELECT(ID, ENABLED, ORDER, AUTH_REQUIRED, BACKEND_ID)
+                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID)
                         .FROM(TABLE)
-                        .ORDER_BY(ORDER)
+                        .ORDER_BY(COL.ORDER)
         ).run().mapToList(SourceMapper.MAPPER)
     }
 
     override fun getEnabledSources(): Observable<List<Source>> {
         return query(
-                SELECT(ID, ENABLED, ORDER, AUTH_REQUIRED, BACKEND_ID)
-                        .FROM(TABLE).WHERE("${ENABLED} = 1")
-                        .ORDER_BY(ORDER)
+                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID)
+                        .FROM(TABLE).WHERE("${COL.ENABLED} = 1")
+                        .ORDER_BY(COL.ORDER)
         ).run().mapToList(SourceMapper.MAPPER)
     }
 
     override fun getById(id: Long): Observable<Source?> {
         return query(
-                SELECT(ID, ENABLED, ORDER, AUTH_REQUIRED, BACKEND_ID)
+                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID)
                         .FROM(TABLE)
                         .WHERE("${COL.ID} = ?")
         ).args(id.toString())
