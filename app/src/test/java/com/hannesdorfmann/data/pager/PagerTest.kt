@@ -20,14 +20,13 @@ class PagerTest {
         val source = Observable.just(page1)
 
         val pager = Pager.create<List<Int>> { previousPage ->
-            if (previousPage == page2) {
-                // End of the pager
+            if (previousPage == page2)
+            // End of the pager
                 Pager.finish<List<Int>>()
-            } else {
-                // Next Page
+            else
+            // Next Page
                 Observable.just(page2)
-            }
-
+            
         }
 
 
