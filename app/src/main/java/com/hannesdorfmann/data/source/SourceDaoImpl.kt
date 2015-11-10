@@ -67,7 +67,7 @@ class SourceDaoImpl : Dao(), SourceDao {
         val builder = SourceMapper.contentValues();
 
         // NO id set, so use sql AUTO_INCREMENT
-        if (source.id != Source.UNKNOWN_ID) builder.id(source.id).enabled(source.enabled)
+        if (source.id != Source.ID.UNKNOWN_ID) builder.id(source.id).enabled(source.enabled)
 
         val cv = builder.order(source.order)
                 .authenticationRequired(source.authenticationRequired)

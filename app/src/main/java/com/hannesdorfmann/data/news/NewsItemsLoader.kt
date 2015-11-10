@@ -16,7 +16,9 @@ import java.util.*
  *
  * @author Hannes Dorfmann
  */
-class NewsItemsLoader(val sourceDao: SourceDao, val backendManager: BackendManager, val pagerFactory: NewsItemPagerFactory) {
+class NewsItemsLoader(val sourceDao: SourceDao,
+                      val backendManager: BackendManager,
+                      val pagerFactory: NewsItemPagerFactory) {
 
     private val pagerSubscriptions = ArrayMap<Long, Subscription>()
     private val itemsPublisher: PublishSubject<List<PlaidItem>> = PublishSubject.create();
@@ -33,7 +35,7 @@ class NewsItemsLoader(val sourceDao: SourceDao, val backendManager: BackendManag
         return sourceDao.getEnabledSources()
     }
 
-    fun loadItems(): Observable<T> {
+    fun loadItems(): Observable<List<PlaidItem>> {
         throw  UnsupportedOperationException("Not implemented yet")
     }
 
@@ -56,15 +58,11 @@ class NewsItemsLoader(val sourceDao: SourceDao, val backendManager: BackendManag
         val removedKeys = HashSet<Long>(pagerSubscriptions.keys);
         for (source in sources) {
             val foundPager = pagerSubscriptions.get(source.id)
-            if (foundPager == null){
-                createAndSubscibePager(source)
+            if (foundPager == null) {
+                //createAndSubscibePager(source)
             }
 
         }
-    }
-
-    internal fun createAndSubscribePager(source : Source){
-        pagerFactory.create()
     }
 
 }

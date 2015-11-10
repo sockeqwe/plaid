@@ -10,7 +10,7 @@ import rx.subscriptions.Subscriptions;
 
 public class Pager<I, O> {
 
-  private static final Observable FINISH_SEQUENCE = Observable.never();
+  public static final Observable FINISH_SEQUENCE = Observable.never();
 
   private PublishSubject<Observable<I>> pages;
   private Observable<I> nextPage = finish();

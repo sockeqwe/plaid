@@ -12,7 +12,6 @@ import io.plaidapp.data.PlaidItem
  */
 class NewsItemPagerFactory(private val backendManager: BackendManager) {
 
-
     fun create(source: Source): Pager<PlaidItem, PlaidItem> {
         throw UnsupportedOperationException("Not implemented yet")
     }
