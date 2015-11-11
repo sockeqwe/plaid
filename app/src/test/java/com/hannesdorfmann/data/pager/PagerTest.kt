@@ -48,4 +48,39 @@ class PagerTest {
         Assert.assertEquals(page2, subscriber.onNextEvents[1])
 
     }
+
+    @Test fun errorTest() {
+
+        val page1 = listOf(1, 2, 3)
+        val page2 = listOf(4, 5, 6)
+
+        // assuming a page type of `List<Integer>`, create your initial sequence
+        val source = Observable.just(page1)
+
+        val pager = Pager.create<List<Int>> (source) { previousPage ->
+            if (previousPage == page2)
+            // End of the pager
+                Pager.finish<List<Int>>()
+            else
+            // Next Page
+                Observable.error(IllegalStateException("Mock exception"))
+
+        }
+
+
+        val subscriber = TestSubscriber<List<Int>>()
+
+        // page your sequence; this will emit (1, 2, 3) to the subscriber right away
+        pager.start().subscribe(subscriber)
+        subscriber.assertNoErrors()
+        subscriber.assertNotCompleted()
+        Assert.assertEquals(1, subscriber.onNextEvents.size)
+        Assert.assertEquals(page1, subscriber.onNextEvents[0])
+
+        // this will emit (4, 5, 6)
+        pager.next()
+        subscriber.assertError(IllegalStateException::class.java)
+        subscriber.assertNotCompleted()
+
+    }
 }

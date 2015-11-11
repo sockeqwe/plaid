@@ -93,7 +93,7 @@ dependencies {
   // Third party libs
   compile 'io.reactivex:rxjava:1.0.15'
   compile 'io.reactivex:rxandroid:1.0.1'
-  compile 'com.f2prateek.rx.preferences:rx-preferences:1.0.1'
+  compile 'com.hannesdorfmann.mosby:viewstate:2.0.0'
 
   // Database
   compile 'com.squareup.sqlbrite:sqlbrite:0.4.1'
