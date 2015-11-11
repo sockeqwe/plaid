@@ -15,9 +15,9 @@
   limitations under the License.
   -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:state_pressed="true" android:color="@color/text_primary_light" />
-    <item android:color="@color/primary_dark" />
-
-</selector>
+<alpha
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@integer/rapid_animation"
+    android:fromAlpha="0.0"
+    android:toAlpha="1.0"
+    android:interpolator="@android:interpolator/linear_out_slow_in" />
