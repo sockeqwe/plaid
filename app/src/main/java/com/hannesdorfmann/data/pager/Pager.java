@@ -18,17 +18,19 @@ public class Pager<I, O> {
 
   private final PagingFunction<I> pagingFunction;
   private final Func1<I, O> pageTransformer;
+  private Observable<I> startPage;
 
-  public static <T> Pager<T, T> create(PagingFunction<T> pagingFunction) {
-    return new Pager<>(pagingFunction, UtilityFunctions.<T>identity());
+  public static <T> Pager<T, T> create(Observable<T> startPage, PagingFunction<T> pagingFunction) {
+    return new Pager<>(startPage, pagingFunction, UtilityFunctions.<T>identity());
   }
 
-  public static <I, O> Pager<I, O> create(PagingFunction<I> pagingFunction,
+  public static <I, O> Pager<I, O> create(Observable<I> startPage, PagingFunction<I> pagingFunction,
       Func1<I, O> pageTransformer) {
-    return new Pager<>(pagingFunction, pageTransformer);
+    return new Pager<>(startPage, pagingFunction, pageTransformer);
   }
 
-  Pager(PagingFunction<I> pagingFunction, Func1<I, O> pageTransformer) {
+  Pager(Observable<I> startPage, PagingFunction<I> pagingFunction, Func1<I, O> pageTransformer) {
+    this.startPage = startPage;
     this.pagingFunction = pagingFunction;
     this.pageTransformer = pageTransformer;
   }
@@ -45,7 +47,8 @@ public class Pager<I, O> {
 
   /**
    * Transforms the given sequence to have its subsequent pages pushed into the observer subscribed
-   * to the new sequence returned by this method. You can advance to the next page by calling {@link
+   * to the new sequence returned by this method. You can advance to the next page by calling
+   * {@link
    * #next()}
    *
    * @param source the source sequence, which would be the first page of the sequence to be paged
@@ -62,6 +65,13 @@ public class Pager<I, O> {
         pages.onNext(source);
       }
     });
+  }
+
+  /**
+   * Beginns to load the first page
+   */
+  public Observable<O> start() {
+    return page(startPage);
   }
 
   /**
@@ -89,7 +99,7 @@ public class Pager<I, O> {
       pages.onNext(nextPage);
     }
   }
-    
+
   public interface PagingFunction<T> extends Func1<T, Observable<T>> {
   }
 

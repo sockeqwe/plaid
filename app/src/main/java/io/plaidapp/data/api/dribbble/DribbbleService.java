@@ -186,4 +186,15 @@ public interface DribbbleService {
 
   @GET("/shots?list=animated") Observable<List<Shot>> getAnimated(@Query("page") Integer page,
       @Query("per_page") Integer pageSize);
+
+
+  @GET("/user/following/shots") Observable<List<Shot>> getFollowing(@Query("page") Integer page,
+      @Query("per_page") Integer pageSize);
+
+  /* List the authenticated user’s shots */
+  @GET("/user/shots") Observable<List<Shot>> getUserShots(@Query("page") Integer page,
+      @Query("per_page") Integer pageSize);
+
+  @GET("/user/likes") Observable<List<Shot>> getUserLikes(@Query("page") Integer page,
+      @Query("per_page") Integer pageSize);
 }

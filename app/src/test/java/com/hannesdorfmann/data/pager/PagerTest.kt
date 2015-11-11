@@ -19,21 +19,21 @@ class PagerTest {
         // assuming a page type of `List<Integer>`, create your initial sequence
         val source = Observable.just(page1)
 
-        val pager = Pager.create<List<Int>> { previousPage ->
+        val pager = Pager.create<List<Int>> (source) { previousPage ->
             if (previousPage == page2)
             // End of the pager
                 Pager.finish<List<Int>>()
             else
             // Next Page
                 Observable.just(page2)
-            
+
         }
 
 
         val subscriber = TestSubscriber<List<Int>>()
 
         // page your sequence; this will emit (1, 2, 3) to the subscriber right away
-        pager.page(source).subscribe(subscriber)
+        pager.start().subscribe(subscriber)
         subscriber.assertNoErrors()
         subscriber.assertNotCompleted()
         Assert.assertEquals(1, subscriber.onNextEvents.size)

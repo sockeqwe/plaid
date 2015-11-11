@@ -14,15 +14,15 @@ class Source() { // Unfortunately data class not supported yet by sqlbrite-dao
 
     object ID {
         internal const val UNKNOWN_ID = -1L
-        const val DRIBBBLE_POPULAR = 0
-        const val DRIBBLE_FOLLOWING = 1
-        const val DRIBBLE_MY_SHOTS = 2
-        const val DRIBBLE_MY_LIKES = 3
-        const val DRIBBLE_RECENT = 4
-        const val DRIBBLE_DEBUTS = 5
-        const val DRIBBLE_ANIMATED = 6
-        const val DESIGNER_NEWS_POPULAR = 7
-        const val DESIGNER_NEWS_RECENT = 8
+        const val DRIBBBLE_POPULAR = 0L
+        const val DRIBBBLE_FOLLOWING = 1L
+        const val DRIBBLE_MY_SHOTS = 2L
+        const val DRIBBLE_MY_LIKES = 3L
+        const val DRIBBLE_RECENT = 4L
+        const val DRIBBLE_DEBUTS = 5L
+        const val DRIBBLE_ANIMATED = 6L
+        const val DESIGNER_NEWS_POPULAR = 7L
+        const val DESIGNER_NEWS_RECENT = 8L
     }
 
     @Column(SourceDaoImpl.COL.ID)

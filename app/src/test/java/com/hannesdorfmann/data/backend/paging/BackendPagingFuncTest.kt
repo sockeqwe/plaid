@@ -8,14 +8,16 @@ import org.junit.Test
 import org.mockito.Mockito
 import rx.Observable
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 /**
  *
  *
  * @author Hannes Dorfmann
  */
-class DibbblePagingFuncTest {
+class BackendPagingFuncTest {
 
 
     private class MockBackendCall() {
@@ -51,13 +53,13 @@ class DibbblePagingFuncTest {
 
     val itemsPerPage = 100
     lateinit var backendCall: MockBackendCall
-    lateinit var paging: DribbblePagingFunc
+    lateinit var paging: BackendPagingFunc<List<Shot>>
     val endOfStream: Observable<List<Shot>> = Observable.never()
 
     @Before
     fun init() {
         backendCall = MockBackendCall()
-        paging = DribbblePagingFunc(itemsPerPage, backendCall.call)
+        paging = BackendPagingFunc(itemsPerPage, backendCall.call, ::morePagesAvailableBecauseListNotEmpty)
     }
 
     @Test
@@ -80,7 +82,7 @@ class DibbblePagingFuncTest {
     }
 
     @Test fun quitOnEmptyResult() {
-        val result = paging.call(arrayListOf())
+        val result = paging.call(emptyList())
         backendCall.assertNeverInvoked()
         assertEquals(endOfStream, result)
     }
@@ -89,5 +91,14 @@ class DibbblePagingFuncTest {
         val result = paging.call(null)
         backendCall.assertNeverInvoked()
         assertEquals(endOfStream, result)
+    }
+
+    @Test fun morePagesAvailableTestListNotEmpty() {
+
+        assertFalse(morePagesAvailableBecauseListNotEmpty(null))
+        assertFalse(morePagesAvailableBecauseListNotEmpty(emptyList()))
+
+        assertTrue(morePagesAvailableBecauseListNotEmpty(listOf(1)))
+
     }
 }

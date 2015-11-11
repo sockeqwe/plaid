@@ -5,6 +5,8 @@ import com.hannesdorfmann.data.backend.BackendManager
 import com.hannesdorfmann.data.pager.Pager
 import com.hannesdorfmann.data.source.Source
 import com.hannesdorfmann.data.source.SourceDao
+import com.hannesdorfmann.scheduler.IoSchedulerTransformer
+import com.hannesdorfmann.scheduler.SchedulerTransformer
 import io.plaidapp.data.PlaidItem
 import rx.Observable
 import rx.Subscription
@@ -17,18 +19,20 @@ import java.util.*
  * @author Hannes Dorfmann
  */
 class NewsItemsLoader(val sourceDao: SourceDao,
-                      val backendManager: BackendManager,
-                      val pagerFactory: NewsItemPagerFactory) {
+                      val pagerFactory: NewsItemPagerFactory,
+                      private val databaseScheduler: SchedulerTransformer<List<Source>> = IoSchedulerTransformer(),
+                      private val sourcePagerScheduler: SchedulerTransformer<List<PlaidItem>> = IoSchedulerTransformer()) {
 
     private val pagerSubscriptions = ArrayMap<Long, Subscription>()
-    private val itemsPublisher: PublishSubject<List<PlaidItem>> = PublishSubject.create();
     private val sourceSubscription: Subscription
+    val items: PublishSubject<List<PlaidItem>> = PublishSubject.create();
 
 
     init {
 
-        sourceSubscription = sourceDao.getEnabledSources().subscribe()
-        itemsPublisher.doOnUnsubscribe { unsubscribeAll() }
+        sourceSubscription = sourceDao.getEnabledSources().compose(databaseScheduler).subscribe({ handleSourceChanges(it) }, { items.onError(it) })
+        items.doOnUnsubscribe { unsubscribeAll() }
+        items.doOnTerminate { unsubscribeAll() }
     }
 
     private fun createSourceObservable(): Observable<List<Source>> {
@@ -59,9 +63,24 @@ class NewsItemsLoader(val sourceDao: SourceDao,
         for (source in sources) {
             val foundPager = pagerSubscriptions.get(source.id)
             if (foundPager == null) {
-                //createAndSubscibePager(source)
+                // No pager found, so it's a new source
+                val pager = pagerFactory.create(source)
+                // TODO implement onError and onCompleted
+                val subscription = pager.start().compose(sourcePagerScheduler).subscribe({ items.onNext(it) }, {}, {})
+                pagerSubscriptions.put(source.id, subscription)
+            } else {
+                // pager already exists, so nothing has changed
+                removedKeys.remove(source.id)
             }
+        }
 
+        for (sourceId in removedKeys) {
+            // Some Sources has been disabled or removed, so cancel any ongoing pager subscription
+            val subscription = pagerSubscriptions.get(sourceId)
+            if (subscription != null) {
+                subscription.unsubscribe()
+                pagerSubscriptions.remove(sourceId)
+            }
         }
     }
 
