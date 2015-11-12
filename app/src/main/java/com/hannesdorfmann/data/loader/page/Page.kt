@@ -1,6 +1,6 @@
-package com.hannesdorfmann.data.loader2.page
+package com.hannesdorfmann.data.loader.page
 
-import com.hannesdorfmann.data.loader2.BackendCaller
+import com.hannesdorfmann.data.loader.BackendCaller
 import com.hannesdorfmann.scheduler.SchedulerTransformer
 import io.plaidapp.data.PlaidItem
 import rx.Observable

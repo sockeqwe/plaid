@@ -1,4 +1,4 @@
-package com.hannesdorfmann.data.loader2
+package com.hannesdorfmann.data.loader
 
 import android.support.v4.util.SparseArrayCompat
 import com.hannesdorfmann.data.backend.BackendId

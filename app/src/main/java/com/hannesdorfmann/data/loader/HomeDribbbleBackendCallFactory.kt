@@ -1,7 +1,7 @@
 package com.hannesdorfmann.data.backend.paging
 
-import com.hannesdorfmann.data.loader2.BackendCaller
-import com.hannesdorfmann.data.loader2.BackendCallerFactory
+import com.hannesdorfmann.data.loader.BackendCaller
+import com.hannesdorfmann.data.loader.BackendCallerFactory
 import com.hannesdorfmann.data.news.PagerFactory
 import com.hannesdorfmann.data.pager.Pager
 import com.hannesdorfmann.data.source.Source

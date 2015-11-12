@@ -2,7 +2,7 @@ package com.hannesdorfmann.data.news
 
 import android.support.v4.util.ArrayMap
 import com.hannesdorfmann.data.backend.BackendManager
-import com.hannesdorfmann.data.loader2.BackendRouter
+import com.hannesdorfmann.data.loader.BackendRouter
 import com.hannesdorfmann.data.pager.Pager
 import com.hannesdorfmann.data.source.Source
 import com.hannesdorfmann.data.source.SourceDao

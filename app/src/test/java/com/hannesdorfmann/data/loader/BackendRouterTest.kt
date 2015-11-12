@@ -1,7 +1,7 @@
 package com.hannesdorfmann.data.loader
 
-import com.hannesdorfmann.data.loader2.BackendCallerFactory
-import com.hannesdorfmann.data.loader2.BackendRouter
+import com.hannesdorfmann.data.loader.BackendCallerFactory
+import com.hannesdorfmann.data.loader.BackendRouter
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito

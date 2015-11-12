@@ -1,4 +1,4 @@
-package com.hannesdorfmann.data.loader2
+package com.hannesdorfmann.data.loader
 
 import rx.Observable
 import java.util.*
