@@ -25,8 +25,8 @@ class BackendRouterTest {
     @Test(expected = IllegalArgumentException::class)
     fun routeAlreadyExists() {
 
-        val factory1 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any, Any>
-        val factory2 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any, Any>
+        val factory1 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any>
+        val factory2 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any>
 
         router.addRoute(1, factory1)
         router.addRoute(1, factory2) // Should throw an exception
@@ -37,8 +37,8 @@ class BackendRouterTest {
         val fac1Id = 23
         val fac2Id = 7
 
-        val factory1 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any, Any>
-        val factory2 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any, Any>
+        val factory1 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any>
+        val factory2 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any>
 
         router.addRoute(fac1Id, factory1)
         router.addRoute(fac2Id, factory2)
@@ -49,9 +49,9 @@ class BackendRouterTest {
 
     @Test
     fun getAllRoutes(){
-        val factory1 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any, Any>
-        val factory2 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any, Any>
-        val factory3 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any, Any>
+        val factory1 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any>
+        val factory2 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any>
+        val factory3 = Mockito.mock(BackendCallerFactory::class.java) as BackendCallerFactory<Any>
 
         router.addRoute(23, factory1)
         router.addRoute(7, factory2)

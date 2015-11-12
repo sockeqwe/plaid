@@ -48,9 +48,18 @@ class SourceDaoImpl : Dao(), SourceDao {
     override fun getEnabledSources(): Observable<List<Source>> {
         return query(
                 SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID)
-                        .FROM(TABLE).WHERE("${COL.ENABLED} = 1")
+                        .FROM(TABLE)
+                        .WHERE("${COL.ENABLED} = 1")
                         .ORDER_BY(COL.ORDER)
         ).run().mapToList(SourceMapper.MAPPER)
+    }
+
+    override fun getSourcesForBackend(backendId: Long): Observable<List<Source>> {
+        return query(
+                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID)
+                        .FROM(TABLE)
+                        .WHERE("${COL.BACKEND_ID} = ?")
+        ).args(backendId.toString()).run().mapToList(SourceMapper.MAPPER)
     }
 
     override fun getById(id: Long): Observable<Source?> {

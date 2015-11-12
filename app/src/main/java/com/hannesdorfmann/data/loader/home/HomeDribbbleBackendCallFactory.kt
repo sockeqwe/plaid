@@ -4,9 +4,9 @@ import android.support.v4.util.ArrayMap
 import android.support.v4.util.SparseArrayCompat
 import com.hannesdorfmann.data.loader.BackendCaller
 import com.hannesdorfmann.data.loader.BackendCallerFactory
-import com.hannesdorfmann.data.news.PagerFactory
 import com.hannesdorfmann.data.pager.Pager
 import com.hannesdorfmann.data.source.Source
+import com.hannesdorfmann.data.source.SourceDao
 import io.plaidapp.data.PlaidItem
 import io.plaidapp.data.api.dribbble.DribbbleService
 import io.plaidapp.data.api.dribbble.model.Shot
@@ -17,7 +17,7 @@ import rx.Observable
  *
  * @author Hannes Dorfmann
  */
-class HomeDribbbleBackendCallFactory(private val backend: DribbbleService) : BackendCallerFactory<Source, List<PlaidItem>> {
+class HomeDribbbleBackendCallFactory(private val backend: DribbbleService, private val sourceDao: SourceDao) : BackendCallerFactory<List<PlaidItem>> {
 
     companion object {
         /**
@@ -28,10 +28,6 @@ class HomeDribbbleBackendCallFactory(private val backend: DribbbleService) : Bac
 
 
     private val backendCalls = ArrayMap<Long, BackendCaller<List<PlaidItem>>>()
-
-    override fun getBackendCaller(inputType: Source): BackendCaller<List<PlaidItem>> {
-        return backendCalls.get(inputType.id)!! // Throws an exception if no route can be constructed
-    }
 
     private fun createCaller(sourceId: Long) {
         BackendCaller(0, ITEMS_PER_PAGE, getBackendMethodToInvoke(sourceId))
@@ -52,7 +48,7 @@ class HomeDribbbleBackendCallFactory(private val backend: DribbbleService) : Bac
         else -> throw IllegalArgumentException("Don't know how to create a ${BackendCaller::class.simpleName} from this ${Source::class.simpleName} with id ${sourceId}")
     }
 
-    override fun getAllBackendCallers(): List<BackendCaller<List<PlaidItem>>> {
+    override fun getAllBackendCallers(): Observable<List<BackendCaller<List<PlaidItem>>>> {
         throw UnsupportedOperationException()
     }
 

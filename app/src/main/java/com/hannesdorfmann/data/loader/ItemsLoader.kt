@@ -45,7 +45,7 @@ class ItemsLoader<I, O>(protected val backendRouter: BackendRouter<I, O>, protec
     }
 
     fun firstPage(): Observable<O> {
-        return FirstPage<O>(backendRouter.getAllBackendCallers()).asObservable()
+        return FirstPage<O>(backendRouter.getAllBackendCallers().toBlocking().first()).asObservable()
     }
 
     fun olderPages(): Observable<OlderPageResult<O>> {
@@ -53,7 +53,7 @@ class ItemsLoader<I, O>(protected val backendRouter: BackendRouter<I, O>, protec
     }
 
     fun loadOlderPage() {
-        val subscription = OlderPage<O>(backendRouter.getAllBackendCallers())
+        val subscription = OlderPage<O>(backendRouter.getAllBackendCallers().toBlocking().first())
                 .asObservable()
                 .compose(olderPagesInternalScheduler)
                 .map { OlderPageResult.SuccessfulOlderPageResult<O>(it) }
@@ -67,7 +67,7 @@ class ItemsLoader<I, O>(protected val backendRouter: BackendRouter<I, O>, protec
     }
 
     fun newestPage(): Observable<O> {
-        return NewestPage<O>(backendRouter.getAllBackendCallers()).asObservable()
+        return NewestPage<O>(backendRouter.getAllBackendCallers().toBlocking().first()).asObservable()
     }
 
 }

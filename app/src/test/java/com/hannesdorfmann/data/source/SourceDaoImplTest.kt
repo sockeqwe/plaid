@@ -286,7 +286,65 @@ class SourceDaoImplTest {
             assertFalse(enabeldOnly.contains(s))
         }
 
+    }
+
+    @Test
+    fun sourcesOfBackend() {
+        clearDatabase()
+
+        val sourcesCount = 10
+        val backend1 = 1
+        val backend2 = 2
+        val backend1Sources = ArrayList<Source>()
+        val backend2Sources = ArrayList<Source>()
+
+        val enabledFun = fun(i: Int): Boolean {
+            return i % 2 == 0
+        }
+
+        for (i in 0..sourcesCount - 1) {
+            val s = Source(i.toLong(), i, enabledFun(i), backend1, true)
+            dao.insert(s).toBlocking()
+            backend1Sources.add(s)
+        }
+
+
+        for (i in sourcesCount..2 * sourcesCount - 1) {
+            val s = Source(i.toLong(), i, enabledFun(i), backend2, true)
+            dao.insert(s).toBlocking()
+            backend2Sources.add(s)
+        }
+
+
+        val queriedBackend1 = dao.getSourcesForBackend(backend1.toLong()).toBlocking().first()
+        assertEquals(queriedBackend1.size, sourcesCount)
+        for (source in queriedBackend1) {
+            val id = source.id
+            assertEquals(id, source.order.toLong())
+            assertEquals(enabledFun(id.toInt()), source.enabled)
+            assertEquals(backend1, source.backendId)
+            assertTrue(source.authenticationRequired)
+            assertTrue(backend1Sources.remove(source))
+        }
+
+        assertTrue(backend1Sources.isEmpty())
+
+
+        val queriedBackend2 = dao.getSourcesForBackend(backend2.toLong()).toBlocking().first()
+        assertEquals(queriedBackend2.size, sourcesCount)
+        for (source in queriedBackend2) {
+            val id = source.id
+            assertEquals(id, source.order.toLong())
+            assertEquals(enabledFun(id.toInt()), source.enabled)
+            assertEquals(backend2, source.backendId)
+            assertTrue(source.authenticationRequired)
+            assertTrue(backend2Sources.remove(source))
+        }
+
+        assertTrue(backend2Sources.isEmpty())
+
 
     }
+
 
 }

@@ -1,5 +1,6 @@
 package com.hannesdorfmann.data.source
 
+import com.hannesdorfmann.data.backend.BackendId
 import rx.Observable
 
 /**
@@ -24,6 +25,11 @@ interface SourceDao {
      * Get a source by its unique id
      */
     fun getById(id: Long): Observable<Source?>
+
+    /**
+     * Get a list of sources available for a certain backend
+     */
+    fun getSourcesForBackend(@BackendId backendId: Long): Observable<List<Source>>
 
     /**
      * Add a source

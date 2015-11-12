@@ -2,6 +2,7 @@ package com.hannesdorfmann.data.loader
 
 import android.support.v4.util.SparseArrayCompat
 import com.hannesdorfmann.data.backend.BackendId
+import rx.Observable
 import java.util.*
 
 /**
@@ -12,9 +13,9 @@ import java.util.*
  */
 class BackendRouter<I, O> {
 
-    private val routes = SparseArrayCompat<BackendCallerFactory<I, O>>()
+    private val routes = SparseArrayCompat<BackendCallerFactory<O>>()
 
-    fun addRoute(@BackendId backendId: Int, backendCallFactory: BackendCallerFactory<I, O>) {
+    fun addRoute(@BackendId backendId: Int, backendCallFactory: BackendCallerFactory<O>) {
         if (routes.get(backendId) != null) {
             throw IllegalArgumentException("A route from backend with id = ${backendId} to a ${backendCallFactory} has already been defined!")
         }
@@ -22,16 +23,16 @@ class BackendRouter<I, O> {
         routes.put(backendId, backendCallFactory)
     }
 
-    fun route(@BackendId backendId: Int): BackendCallerFactory<I, O> {
+    fun route(@BackendId backendId: Int): BackendCallerFactory<O> {
         return routes.get(backendId)!! // Throws an Exception if no BackendCallFactory registered for given backend id
     }
 
     /**
      * Get all available routes
      */
-    fun getAllRoutes(): List<BackendCallerFactory<I, O>> {
+    fun getAllRoutes(): List<BackendCallerFactory<O>> {
         val size = routes.size() - 1
-        val factories = ArrayList<BackendCallerFactory<I, O>>()
+        val factories = ArrayList<BackendCallerFactory<O>>()
 
         for (i in 0..size) {
             val key = routes.keyAt(i)
@@ -41,14 +42,7 @@ class BackendRouter<I, O> {
         return factories
     }
 
-    fun getAllBackendCallers(): List<BackendCaller<O>> {
-
-        val backendRoutes = getAllRoutes()
-        val backendCalls = ArrayList<BackendCaller<O>>()
-
-        for (route in backendRoutes) {
-            backendCalls.addAll(route.getAllBackendCallers())
-        }
-        return backendCalls
+    fun getAllBackendCallers(): Observable<List<BackendCaller<O>>> {
+        throw UnsupportedOperationException()
     }
 }

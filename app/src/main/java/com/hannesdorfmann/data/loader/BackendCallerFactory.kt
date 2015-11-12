@@ -1,5 +1,7 @@
 package com.hannesdorfmann.data.loader
 
+import rx.Observable
+
 /**
  * Responsible to create a [BackendCaller]
  *
@@ -7,16 +9,10 @@ package com.hannesdorfmann.data.loader
  * @param O The output type of what kind of observable the [BackendCaller] is going to produce
  * @author Hannes Dorfmann
  */
-interface BackendCallerFactory<I, O> {
-
-    /**
-     * Create a [BackendCaller] depending on the given input
-     * @param inputType The data information  to lookup and create the corresponding [BackendCaller]
-     */
-    fun getBackendCaller(inputType: I): BackendCaller<O>
+interface BackendCallerFactory<O> {
 
     /**
      * Get all available backend callers
      */
-    fun getAllBackendCallers(): List<BackendCaller<O>>
+    fun getAllBackendCallers(): Observable<List<BackendCaller<O>>>
 }
