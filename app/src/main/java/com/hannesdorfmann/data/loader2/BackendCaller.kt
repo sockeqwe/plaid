@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger
  *
  * @author Hannes Dorfmann
  */
-class BackendCallFactory<T>(private val startPage: Int = 0,
+class BackendCaller<T>(private val startPage: Int = 0,
                             private val itemsPerPage: Int,
                             private val backendMethodToCall: (Int, Int) -> Observable<T>) {
 

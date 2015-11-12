@@ -1,6 +1,6 @@
 package com.hannesdorfmann.data.loader2.page
 
-import com.hannesdorfmann.data.loader2.BackendCallFactory
+import com.hannesdorfmann.data.loader2.BackendCaller
 import com.hannesdorfmann.scheduler.SchedulerTransformer
 import io.plaidapp.data.PlaidItem
 import rx.Observable
@@ -8,12 +8,12 @@ import rx.subjects.PublishSubject
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * A page is representing a special class to concatenate different backend calls by using [BackendCallFactory].
+ * A page is representing a special class to concatenate different backend calls by using [BackendCaller].
  * Use [#asObservable] to get the observable
  *
  * @author Hannes Dorfmann
  */
-abstract class Page<T>(val backendCalls: List<BackendCallFactory<T>>) {
+abstract class Page<T>(val backendCalls: List<BackendCaller<T>>) {
 
     var failed = AtomicInteger()
         private set
@@ -51,6 +51,6 @@ abstract class Page<T>(val backendCalls: List<BackendCallFactory<T>>) {
         return Observable.concat(Observable.from(observables))
     }
 
-    protected abstract fun getBackendCall(callFactory: BackendCallFactory<T>): Observable<T>
+    protected abstract fun getBackendCall(callFactory: BackendCaller<T>): Observable<T>
 
 }

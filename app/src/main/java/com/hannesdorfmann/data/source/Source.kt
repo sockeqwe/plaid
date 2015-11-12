@@ -23,6 +23,7 @@ class Source() { // Unfortunately data class not supported yet by sqlbrite-dao
         const val DRIBBLE_ANIMATED = 6L
         const val DESIGNER_NEWS_POPULAR = 7L
         const val DESIGNER_NEWS_RECENT = 8L
+        const val PRODUCT_HUNT = 9L
     }
 
     @Column(SourceDaoImpl.COL.ID)
