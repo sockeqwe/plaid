@@ -13,5 +13,10 @@ interface BackendCallerFactory<I, O> {
      * Create a [BackendCaller] depending on the given input
      * @param inputType The data information  to lookup and create the corresponding [BackendCaller]
      */
-    fun createBackendCaller(inputType: I): BackendCaller<O>
+    fun getBackendCaller(inputType: I): BackendCaller<O>
+
+    /**
+     * Get all available backend callers
+     */
+    fun getAllBackendCallers(): List<BackendCaller<O>>
 }

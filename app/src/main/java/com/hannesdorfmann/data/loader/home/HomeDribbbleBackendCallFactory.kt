@@ -1,5 +1,7 @@
 package com.hannesdorfmann.data.backend.paging
 
+import android.support.v4.util.ArrayMap
+import android.support.v4.util.SparseArrayCompat
 import com.hannesdorfmann.data.loader.BackendCaller
 import com.hannesdorfmann.data.loader.BackendCallerFactory
 import com.hannesdorfmann.data.news.PagerFactory
@@ -25,13 +27,19 @@ class HomeDribbbleBackendCallFactory(private val backend: DribbbleService) : Bac
     }
 
 
-    override fun createBackendCaller(inputType: Source): BackendCaller<List<PlaidItem>> {
-        return BackendCaller(0, ITEMS_PER_PAGE, getBackendMethodToInvoke(inputType))
+    private val backendCalls = ArrayMap<Long, BackendCaller<List<PlaidItem>>>()
+
+    override fun getBackendCaller(inputType: Source): BackendCaller<List<PlaidItem>> {
+        return backendCalls.get(inputType.id)!! // Throws an exception if no route can be constructed
+    }
+
+    private fun createCaller(sourceId: Long) {
+        BackendCaller(0, ITEMS_PER_PAGE, getBackendMethodToInvoke(sourceId))
     }
 
     // TODO make a Factory / Plugin mechanism for this as well
-    internal fun getBackendMethodToInvoke(source: Source):
-            (pageOffset: Int, itemsPerPage: Int) -> Observable<List<PlaidItem>> = when (source.id) {
+    private fun getBackendMethodToInvoke(sourceId: Long):
+            (pageOffset: Int, itemsPerPage: Int) -> Observable<List<PlaidItem>> = when (sourceId) {
         Source.ID.DRIBBBLE_POPULAR -> getPopular
         Source.ID.DRIBBBLE_FOLLOWING -> getFollowing
         Source.ID.DRIBBLE_ANIMATED -> getAnimated
@@ -40,7 +48,12 @@ class HomeDribbbleBackendCallFactory(private val backend: DribbbleService) : Bac
         Source.ID.DRIBBLE_MY_LIKES -> getMyLikes
         Source.ID.DRIBBLE_MY_SHOTS -> getUserShots
 
-        else -> throw IllegalArgumentException("Don't know how to create a ${BackendCaller::class.simpleName} from this ${Source::class.simpleName} with id ${source.id}")
+    // TODO custom "search"
+        else -> throw IllegalArgumentException("Don't know how to create a ${BackendCaller::class.simpleName} from this ${Source::class.simpleName} with id ${sourceId}")
+    }
+
+    override fun getAllBackendCallers(): List<BackendCaller<List<PlaidItem>>> {
+        throw UnsupportedOperationException()
     }
 
     val getPopular = fun(pageOffset: Int, itemsPerPage: Int): Observable<List<PlaidItem>> {

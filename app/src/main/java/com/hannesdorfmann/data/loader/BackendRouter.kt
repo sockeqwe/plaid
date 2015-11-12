@@ -40,4 +40,15 @@ class BackendRouter<I, O> {
 
         return factories
     }
+
+    fun getAllBackendCallers(): List<BackendCaller<O>> {
+
+        val backendRoutes = getAllRoutes()
+        val backendCalls = ArrayList<BackendCaller<O>>()
+
+        for (route in backendRoutes) {
+            backendCalls.addAll(route.getAllBackendCallers())
+        }
+        return backendCalls
+    }
 }
