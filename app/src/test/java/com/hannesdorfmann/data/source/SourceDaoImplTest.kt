@@ -316,7 +316,7 @@ class SourceDaoImplTest {
         }
 
 
-        val queriedBackend1 = dao.getSourcesForBackend(backend1.toLong()).toBlocking().first()
+        val queriedBackend1 = dao.getSourcesForBackend(backend1).toBlocking().first()
         assertEquals(queriedBackend1.size, sourcesCount)
         for (source in queriedBackend1) {
             val id = source.id
@@ -330,7 +330,7 @@ class SourceDaoImplTest {
         assertTrue(backend1Sources.isEmpty())
 
 
-        val queriedBackend2 = dao.getSourcesForBackend(backend2.toLong()).toBlocking().first()
+        val queriedBackend2 = dao.getSourcesForBackend(backend2).toBlocking().first()
         assertEquals(queriedBackend2.size, sourcesCount)
         for (source in queriedBackend2) {
             val id = source.id

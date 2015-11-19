@@ -29,7 +29,7 @@ interface SourceDao {
     /**
      * Get a list of sources available for a certain backend
      */
-    fun getSourcesForBackend(@BackendId backendId: Long): Observable<List<Source>>
+    fun getSourcesForBackend(@BackendId backendId: Int): Observable<List<Source>>
 
     /**
      * Add a source

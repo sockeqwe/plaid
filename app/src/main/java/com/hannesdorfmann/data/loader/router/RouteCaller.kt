@@ -1,4 +1,4 @@
-package com.hannesdorfmann.data.loader
+package com.hannesdorfmann.data.loader.router
 
 import rx.Observable
 import java.util.*
@@ -11,9 +11,9 @@ import java.util.concurrent.atomic.AtomicInteger
  *
  * @author Hannes Dorfmann
  */
-class BackendCaller<T>(private val startPage: Int = 0,
-                            private val itemsPerPage: Int,
-                            private val backendMethodToCall: (Int, Int) -> Observable<T>) {
+class RouteCaller<T>(private val startPage: Int = 0,
+                     private val itemsPerPage: Int,
+                     private val backendMethodToCall: (Int, Int) -> Observable<T>) {
 
     /**
      * Offset for loading more

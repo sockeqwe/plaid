@@ -54,7 +54,7 @@ class SourceDaoImpl : Dao(), SourceDao {
         ).run().mapToList(SourceMapper.MAPPER)
     }
 
-    override fun getSourcesForBackend(backendId: Long): Observable<List<Source>> {
+    override fun getSourcesForBackend(backendId: Int): Observable<List<Source>> {
         return query(
                 SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID)
                         .FROM(TABLE)

@@ -91,7 +91,7 @@ dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   // Third party libs
-  compile 'io.reactivex:rxjava:1.0.15'
+  compile 'io.reactivex:rxjava:1.0.16'
   compile 'io.reactivex:rxandroid:1.0.1'
   compile 'com.hannesdorfmann.mosby:viewstate:2.0.0'
 
@@ -109,7 +109,7 @@ dependencies {
   testCompile 'junit:junit:4.12'
 }
 buildscript {
-  ext.kotlin_version = '1.0.0-beta-1103'
+  ext.kotlin_version = '1.0.0-beta-2423'
   repositories {
     mavenCentral()
   }

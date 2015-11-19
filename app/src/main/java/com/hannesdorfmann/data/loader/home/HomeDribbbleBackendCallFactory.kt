@@ -2,8 +2,9 @@ package com.hannesdorfmann.data.backend.paging
 
 import android.support.v4.util.ArrayMap
 import android.support.v4.util.SparseArrayCompat
-import com.hannesdorfmann.data.loader.BackendCaller
-import com.hannesdorfmann.data.loader.BackendCallerFactory
+import com.hannesdorfmann.data.backend.BackendManager
+import com.hannesdorfmann.data.loader.router.RouteCaller
+import com.hannesdorfmann.data.loader.router.RouteCallerFactory
 import com.hannesdorfmann.data.pager.Pager
 import com.hannesdorfmann.data.source.Source
 import com.hannesdorfmann.data.source.SourceDao
@@ -11,26 +12,34 @@ import io.plaidapp.data.PlaidItem
 import io.plaidapp.data.api.dribbble.DribbbleService
 import io.plaidapp.data.api.dribbble.model.Shot
 import rx.Observable
+import java.util.*
 
 /**
  * A [PagerFactory] that creates [Pager] for Dribbble [Source]s
  *
  * @author Hannes Dorfmann
  */
-class HomeDribbbleBackendCallFactory(private val backend: DribbbleService, private val sourceDao: SourceDao) : BackendCallerFactory<List<PlaidItem>> {
+class HomeDribbbleBackendCallFactory(private val backend: DribbbleService, sourceDao: SourceDao) : RouteCallerFactory<List<PlaidItem>> {
 
     companion object {
         /**
          * How many items should be loaded per page
          */
-        const val ITEMS_PER_PAGE = 100
+        private const val ITEMS_PER_PAGE = 100
     }
 
+    private val backendCalls = ArrayMap<Long, RouteCaller<List<PlaidItem>>>()
+    private val sources: Observable<List<Source>>
 
-    private val backendCalls = ArrayMap<Long, BackendCaller<List<PlaidItem>>>()
 
-    private fun createCaller(sourceId: Long) {
-        BackendCaller(0, ITEMS_PER_PAGE, getBackendMethodToInvoke(sourceId))
+    init {
+        sources = checkedDefer {
+            sourceDao.getSourcesForBackend(BackendManager.ID.DRIBBBLE).share()
+        }
+    }
+
+    private fun createCaller(sourceId: Long): RouteCaller<List<PlaidItem>> {
+        return RouteCaller(0, ITEMS_PER_PAGE, getBackendMethodToInvoke(sourceId))
     }
 
     // TODO make a Factory / Plugin mechanism for this as well
@@ -45,12 +54,46 @@ class HomeDribbbleBackendCallFactory(private val backend: DribbbleService, priva
         Source.ID.DRIBBLE_MY_SHOTS -> getUserShots
 
     // TODO custom "search"
-        else -> throw IllegalArgumentException("Don't know how to create a ${BackendCaller::class.simpleName} from this ${Source::class.simpleName} with id ${sourceId}")
+        else -> throw IllegalArgumentException("Don't know how to create a ${RouteCaller::class.simpleName} from this ${Source::class.simpleName} with id ${sourceId}")
     }
 
-    override fun getAllBackendCallers(): Observable<List<BackendCaller<List<PlaidItem>>>> {
-        throw UnsupportedOperationException()
+    override fun getAllBackendCallers(): Observable<List<RouteCaller<List<PlaidItem>>>> {
+        return sources.map(mapSourcesToBackendCalls)
+
     }
+
+    /**
+     * Transforms / maps a `List
+     */
+    val mapSourcesToBackendCalls = fun(sources: List<Source>): List<RouteCaller<List<PlaidItem>>> {
+        val calls = ArrayList<RouteCaller<List<PlaidItem>>>()
+        sources.forEach { source ->
+
+            val call = backendCalls[source.id]
+
+            if (call == null) {
+                // New source added
+                if (source.enabled) {
+                    val newCall = createCaller(source.id)
+                    backendCalls.put(source.id, newCall)
+                    calls.add(newCall)
+                }
+
+            } else {
+                // Already existing source
+
+                if (!source.enabled) {
+                    // Source has been disabled
+                    backendCalls.remove(source.id)
+                } else {
+                    calls.add(call)
+                }
+            }
+        }
+
+        return calls
+    }
+
 
     val getPopular = fun(pageOffset: Int, itemsPerPage: Int): Observable<List<PlaidItem>> {
         return backend.getPopular(pageOffset, itemsPerPage) as Observable<List<PlaidItem>>
@@ -81,3 +124,4 @@ class HomeDribbbleBackendCallFactory(private val backend: DribbbleService, priva
     }
 
 }
+
