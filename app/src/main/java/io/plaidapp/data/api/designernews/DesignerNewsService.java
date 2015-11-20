@@ -16,14 +16,13 @@
 
 package io.plaidapp.data.api.designernews;
 
-import java.util.Map;
-
 import io.plaidapp.data.api.designernews.model.AccessToken;
 import io.plaidapp.data.api.designernews.model.Comment;
 import io.plaidapp.data.api.designernews.model.NewStoryRequest;
 import io.plaidapp.data.api.designernews.model.StoriesResponse;
 import io.plaidapp.data.api.designernews.model.StoryResponse;
 import io.plaidapp.data.api.designernews.model.UserResponse;
+import java.util.Map;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.Field;
@@ -43,45 +42,35 @@ import retrofit.http.Query;
  */
 public interface DesignerNewsService {
 
-    String ENDPOINT = "https://www.designernews.co/";
+  String ENDPOINT = "https://www.designernews.co/";
 
-    @GET("/api/v1/stories")
-    void getTopStories(@Query("page") Integer page,
-                       Callback<StoriesResponse> callback);
+  @GET("/api/v1/stories") void getTopStories(@Query("page") Integer page,
+      Callback<StoriesResponse> callback);
 
-    @GET("/api/v1/stories/recent")
-    void getRecentStories(@Query("page") Integer page,
-                          Callback<StoriesResponse> callback);
+  @GET("/api/v1/stories/recent") void getRecentStories(@Query("page") Integer page,
+      Callback<StoriesResponse> callback);
 
-    @GET("/api/v1/stories/search")
-    void search(@Query("query") String query,
-                @Query("page") Integer page,
-                Callback<StoriesResponse> callback);
+  @GET("/api/v1/stories/search") void search(@Query("query") String query,
+      @Query("page") Integer page, Callback<StoriesResponse> callback);
 
-    @FormUrlEncoded
-    @POST("/oauth/token")
-    void login(@FieldMap() Map loginParams,
-               Callback<AccessToken> callback);
+  @FormUrlEncoded @POST("/oauth/token") void login(@FieldMap() Map loginParams,
+      Callback<AccessToken> callback);
 
-    @GET("/api/v1/me")
-    void getAuthedUser(Callback<UserResponse> callback);
+  @GET("/api/v1/me") void getAuthedUser(Callback<UserResponse> callback);
 
-    @POST("/api/v1/stories/{id}/upvote")
-    void upvoteStory(@Path("id") long storyId,
-                     @Body String ignored,  // can remove when retrofit releases this fix:
-                     // https://github
-                     // .com/square/retrofit/commit/19ac1e2c4551448184ad66c4a0ec172e2741c2ee
-                     Callback<StoryResponse> callback);
+  @POST("/api/v1/stories/{id}/upvote") void upvoteStory(@Path("id") long storyId,
+      @Body String ignored,  // can remove when retrofit releases this fix:
+      // https://github
+      // .com/square/retrofit/commit/19ac1e2c4551448184ad66c4a0ec172e2741c2ee
+      Callback<StoryResponse> callback);
 
-    @Headers("Content-Type: application/vnd.api+json")
-    @POST("/api/v2/stories")
-    void postStory(@Body NewStoryRequest story,
-                   Callback<StoriesResponse> callback);
+  @Headers("Content-Type: application/vnd.api+json") @POST("/api/v2/stories") void postStory(
+      @Body NewStoryRequest story, Callback<StoriesResponse> callback);
 
-    @FormUrlEncoded
-    @POST("/api/v1/stories/{id}/reply")
-    void comment(@Path("id") long storyId,
-                 @Field("comment[body]") String comment,
-                 Callback<Comment> callback);
+  @FormUrlEncoded @POST("/api/v1/stories/{id}/reply") void comment(@Path("id") long storyId,
+      @Field("comment[body]") String comment, Callback<Comment> callback);
 
+  // RxJava
+  @GET("/api/v1/stories/search") rx.Observable<StoriesResponse> search(@Query("query") String query,
+      @Query("page") Integer page);
 }

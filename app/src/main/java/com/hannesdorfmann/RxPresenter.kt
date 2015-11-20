@@ -13,9 +13,9 @@ import rx.subscriptions.CompositeSubscription
  *
  * @author Hannes Dorfmann
  */
-open class RxPresenter <V : MvpView, M>(private val scheduler: SchedulerTransformer<M>) : MvpBasePresenter<V>() {
+open class RxPresenter <V : MvpView, M>(protected val scheduler: SchedulerTransformer<M>) : MvpBasePresenter<V>() {
 
-    private val subscribers = CompositeSubscription()
+    private var subscribers = CompositeSubscription()
 
     protected fun subscribe(observable: Observable<M>,
                             onError: (Throwable) -> Unit,
@@ -37,8 +37,13 @@ open class RxPresenter <V : MvpView, M>(private val scheduler: SchedulerTransfor
     override fun detachView(retainInstance: Boolean) {
         super.detachView(retainInstance)
         if (!retainInstance) {
-            subscribers.unsubscribe()
+            unsubscribe()
         }
+    }
+
+    protected fun unsubscribe() {
+        subscribers.unsubscribe()
+        subscribers = CompositeSubscription()
     }
 
 }

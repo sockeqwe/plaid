@@ -104,7 +104,7 @@ import retrofit.client.Response;
 
 public class DesignerNewsStory extends Activity {
 
-    protected static final String EXTRA_STORY = "story";
+    public static final String EXTRA_STORY = "story";
     private static final int RC_LOGIN_UPVOTE = 7;
 
     private View header;

@@ -110,7 +110,7 @@ import retrofit.converter.GsonConverter;
 
 public class DribbbleShot extends Activity {
 
-    protected final static String EXTRA_SHOT = "shot";
+    public final static String EXTRA_SHOT = "shot";
     private static final int RC_LOGIN_LIKE = 0;
     private static final int RC_LOGIN_COMMENT = 1;
     private static final float SCRIM_ADJUSTMENT = 0.075f;
