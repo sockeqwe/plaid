@@ -540,7 +540,7 @@ public class SearchActivity extends MvpViewStateActivity<SearchView, SearchPrese
     }
   }
 
-  @Override public void addOlderItems(@NotNull List<? extends PlaidItem> items) {
+  @Override public void addOlderItems(@NotNull List<PlaidItem> items) {
     adapter.addAndResort(items);
   }
 
@@ -570,7 +570,7 @@ public class SearchActivity extends MvpViewStateActivity<SearchView, SearchPrese
     errorView.setVisibility(View.VISIBLE);
   }
 
-  @Override public void setContentItems(@NotNull List<? extends PlaidItem> items) {
+  @Override public void setContentItems(@NotNull List<PlaidItem> items) {
     adapter.addAndResort(items);
   }
 
@@ -592,7 +592,7 @@ public class SearchActivity extends MvpViewStateActivity<SearchView, SearchPrese
   }
 
   @NonNull @Override public SearchPresenter createPresenter() {
-    return null;
+    return getObjectGraph().get(SearchPresenter.class);
   }
 
   private ObjectGraph getObjectGraph() {

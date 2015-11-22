@@ -16,11 +16,10 @@ import javax.inject.Singleton;
  */
 @Module(
     injects = {
-        SearchPresenterImpl.class, SearchItemsLoaderFactory.class
+        SearchPresenter.class, SearchPresenterImpl.class, SearchItemsLoaderFactory.class
     },
     addsTo = ApplicationModule.class,
-    library = true
-)
+    library = true)
 
 public class SearchModule {
 
