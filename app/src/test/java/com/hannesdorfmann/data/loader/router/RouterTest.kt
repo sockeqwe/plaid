@@ -60,5 +60,5 @@ class RouterTest {
 
     }
 
-    // TODO test for route changes
+    // TODO test for dynamic route changes
 }
