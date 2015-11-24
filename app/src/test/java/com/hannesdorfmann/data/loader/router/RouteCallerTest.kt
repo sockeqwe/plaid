@@ -58,7 +58,8 @@ class RouteCallerTest {
         assertCallInvoked(startOffset, itemsPerPage)
     }
 
-    @Test fun getOlderWithRetry() {
+    @Test
+    fun getOlderWithRetry() {
         var subscriber = TestSubscriber<Int>()
         routeCaller.getOlderWithRetry().subscribe(subscriber)
 
