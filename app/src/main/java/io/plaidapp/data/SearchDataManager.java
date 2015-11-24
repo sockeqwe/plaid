@@ -19,6 +19,7 @@ package io.plaidapp.data;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import java.io.IOException;
 import java.util.List;
 
 import io.plaidapp.data.api.designernews.model.StoriesResponse;
@@ -29,92 +30,91 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * Responsible for loading search results from dribbble and designer news. Instantiating classes are
+ * Responsible for loading search results from dribbble and designer news. Instantiating classes
+ * are
  * responsible for providing the {code onDataLoaded} method to do something with the data.
  */
 public abstract class SearchDataManager extends BaseDataManager implements DataLoadingSubject {
 
-    // state
-    private String query = "";
-    private boolean loadingDribbble = false;
-    private boolean loadingDesignerNews = false;
-    private int page = 1;
+  // state
+  private String query = "";
+  private boolean loadingDribbble = false;
+  private boolean loadingDesignerNews = false;
+  private int page = 1;
 
-    public SearchDataManager(Context context) {
-        super(context);
+  public SearchDataManager(Context context) {
+    super(context);
+  }
+
+  @Override public boolean isDataLoading() {
+    return loadingDribbble || loadingDesignerNews;
+  }
+
+  public void searchFor(String query) {
+    if (!this.query.equals(query)) {
+      clear();
+      this.query = query;
+    } else {
+      page++;
     }
+    searchDribbble(query, page);
+    searchDesignerNews(query, page);
+  }
 
-    @Override
-    public boolean isDataLoading() {
-        return loadingDribbble || loadingDesignerNews;
-    }
+  public void loadMore() {
+    searchFor(query);
+  }
 
-    public void searchFor(String query) {
-        if (!this.query.equals(query)) {
-            clear();
-            this.query = query;
-        } else {
-            page++;
+  public void clear() {
+    query = "";
+    page = 1;
+    loadingDribbble = false;
+    loadingDesignerNews = false;
+  }
+
+  public String getQuery() {
+    return query;
+  }
+
+  private void searchDesignerNews(final String query, final int resultsPage) {
+    loadingDesignerNews = true;
+    getDesignerNewsApi().search(query, resultsPage, new Callback<StoriesResponse>() {
+      @Override public void success(StoriesResponse storiesResponse, Response response) {
+        if (storiesResponse != null) {
+          setPage(storiesResponse.stories, resultsPage);
+          setDataSource(storiesResponse.stories,
+              Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query);
+          onDataLoaded(storiesResponse.stories);
         }
-        searchDribbble(query, page);
-        searchDesignerNews(query, page);
-    }
-
-    public void loadMore() {
-        searchFor(query);
-    }
-
-    public void clear() {
-        query = "";
-        page = 1;
-        loadingDribbble = false;
         loadingDesignerNews = false;
+      }
 
-    }
+      @Override public void failure(RetrofitError error) {
+        loadingDesignerNews = false;
+      }
+    });
+  }
 
-    public String getQuery() {
-        return query;
-    }
+  private void searchDribbble(final String query, final int page) {
+    loadingDribbble = true;
+    new AsyncTask<Void, Void, List<Shot>>() {
+      @Override protected List<Shot> doInBackground(Void... params) {
 
-    private void searchDesignerNews(final String query, final int resultsPage) {
-        loadingDesignerNews = true;
-        getDesignerNewsApi().search(query, resultsPage, new Callback<StoriesResponse>() {
-            @Override
-            public void success(StoriesResponse storiesResponse, Response response) {
-                if (storiesResponse != null) {
-                    setPage(storiesResponse.stories, resultsPage);
-                    setDataSource(storiesResponse.stories,
-                            Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query);
-                    onDataLoaded(storiesResponse.stories);
-                }
-                loadingDesignerNews = false;
-            }
+        try {
+          return DribbbleSearch.search(query, DribbbleSearch.SORT_POPULAR, page);
+        } catch (IOException e) {
+          return null;
+        }
+      }
 
-            @Override
-            public void failure(RetrofitError error) {
-                loadingDesignerNews = false;
-            }
-        });
-    }
-
-    private void searchDribbble(final String query, final int page) {
-        loadingDribbble = true;
-        new AsyncTask<Void, Void, List<Shot>>() {
-            @Override
-            protected List<Shot> doInBackground(Void... params) {
-                return DribbbleSearch.search(query, DribbbleSearch.SORT_POPULAR, page);
-            }
-
-            @Override
-            protected void onPostExecute(List<Shot> shots) {
-                if (shots != null && shots.size() > 0) {
-                    setPage(shots, page);
-                    setDataSource(shots, "Dribbble Search");
-                    onDataLoaded(shots);
-                }
-                loadingDribbble = false;
-            }
-        }.execute();
-    }
-
+      @Override protected void onPostExecute(List<Shot> shots) {
+        if (shots != null && shots.size() > 0) {
+          setPage(shots, page);
+          setDataSource(shots, "Dribbble Search");
+          onDataLoaded(shots);
+        }
+        loadingDribbble = false;
+      }
+    }.execute();
+  }
 }

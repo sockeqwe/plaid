@@ -39,7 +39,9 @@ class RouteCaller<T>(private val startPage: Int = 0,
         }
 
         return backendMethodToCall(pageOffset, itemsPerPage)
-                .doOnError { olderFailedButRetryLater.add(pageOffset) }
+                .doOnError {
+                    olderFailedButRetryLater.add(pageOffset)
+                }
     }
 
     /**

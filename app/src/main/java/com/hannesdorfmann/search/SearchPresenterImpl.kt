@@ -34,7 +34,7 @@ class SearchPresenterImpl(private val itemsLoaderFactory: SearchItemsLoaderFacto
     override fun searchMore(query: String) {
 
         view?.showLoadingMore(true)
-        subscribe(itemsLoader!!.firstPage(), { // Error handling
+        subscribe(itemsLoader!!.olderPages(), { // Error handling
             view?.showLoadingMore(false)
             view?.showLoadingMoreError(it)
         }, { // onNext

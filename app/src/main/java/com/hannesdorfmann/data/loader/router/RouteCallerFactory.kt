@@ -26,7 +26,7 @@ interface RouteCallerFactory<O> {
             try {
                 observable()
             } catch(e: Exception) {
-                Observable.error<T>(e)
+                throw RuntimeException(e)
             }
         }
     }

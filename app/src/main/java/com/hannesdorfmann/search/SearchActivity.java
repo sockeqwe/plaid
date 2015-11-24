@@ -406,6 +406,10 @@ public class SearchActivity extends MvpViewStateActivity<SearchView, SearchPrese
     searchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
     searchView.setImeOptions(searchView.getImeOptions() | EditorInfo.IME_ACTION_SEARCH |
         EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN);
+  }
+
+  @Override protected void onPostCreate(Bundle savedInstanceState) {
+    super.onPostCreate(savedInstanceState);
     searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
       @Override public boolean onQueryTextSubmit(String query) {
         searchFor(query);

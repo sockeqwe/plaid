@@ -1,5 +1,7 @@
 package com.hannesdorfmann.data.loader.page
 
+import android.util.Log
+import com.fernandocejas.frodo.annotation.RxLogObservable
 import com.hannesdorfmann.data.loader.router.RouteCaller
 import com.hannesdorfmann.scheduler.SchedulerTransformer
 import io.plaidapp.data.PlaidItem
@@ -23,6 +25,7 @@ abstract class Page<T>(val routeCalls: Observable<List<RouteCaller<T>>>) {
     /**
      * Return an observable for this page
      */
+    @RxLogObservable
     fun asObservable(): Observable<T> {
 
         return routeCalls.flatMap { routeCalls ->
@@ -42,7 +45,9 @@ abstract class Page<T>(val routeCalls: Observable<List<RouteCaller<T>>>) {
             }
 
             // return the created Observable
-            Observable.merge(observables)
+            Observable.merge(observables).doOnNext {
+                Log.d("OkHttp", "merging " + it)
+            }
         }
     }
 
