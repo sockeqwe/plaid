@@ -15,8 +15,14 @@
   limitations under the License.
   -->
 
-<nine-patch
+<transition
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/grid_item_background"
-    android:tint="@color/product_hunt"
-    android:tintMode="multiply" />
+    class="io.plaidapp.ui.transitions.Pop"
+    android:fadingMode="fade_in"
+    android:startDelay="450"
+    android:duration="300"
+    android:interpolator="@android:interpolator/linear_out_slow_in">
+    <targets>
+        <target android:targetId="@id/fab" />
+    </targets>
+</transition>

@@ -40,6 +40,7 @@ import android.os.Parcelable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.transition.AutoTransition;
@@ -121,7 +122,7 @@ public class DribbbleShot extends Activity {
     @Bind(R.id.fab_heart) FABToggle fab;
     private View shotSpacer;
     private View title;
-    private TextView description;
+    private View description;
     private LinearLayout shotActions;
     private Button likeCount;
     private Button viewCount;
@@ -161,7 +162,7 @@ public class DribbbleShot extends Activity {
                 commentsList, false);
         shotSpacer = shotDescription.findViewById(R.id.shot_spacer);
         title = shotDescription.findViewById(R.id.shot_title);
-        description = (TextView) shotDescription.findViewById(R.id.shot_description);
+        description = shotDescription.findViewById(R.id.shot_description);
         shotActions = (LinearLayout) shotDescription.findViewById(R.id.shot_actions);
         likeCount = (Button) shotDescription.findViewById(R.id.shot_like_count);
         viewCount = (Button) shotDescription.findViewById(R.id.shot_view_count);
@@ -188,11 +189,13 @@ public class DribbbleShot extends Activity {
         };
 
         // load the main image
+        final int[] imageSize = shot.images.bestSize();
         Glide.with(this)
                 .load(shot.images.best())
                 .listener(shotLoadListener)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .priority(Priority.IMMEDIATE)
+                .override(imageSize[0], imageSize[1])
                 .into(imageView);
         imageView.setOnClickListener(shotClick);
         shotSpacer.setOnClickListener(shotClick);
@@ -216,7 +219,14 @@ public class DribbbleShot extends Activity {
             ((TextView) title).setText(shot.title);
         }
         if (!TextUtils.isEmpty(shot.description)) {
-            HtmlUtils.setTextWithNiceLinks(description, shot.getParsedDescription(description));
+            final Spanned descText = shot.getParsedDescription(
+                    ContextCompat.getColorStateList(this, R.color.dribbble_links),
+                    ContextCompat.getColor(this, R.color.dribbble_link_highlight));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ((FabOverlapTextView) description).setText(descText);
+            } else {
+                HtmlUtils.setTextWithNiceLinks((TextView) description, descText);
+            }
         } else {
             description.setVisibility(View.GONE);
         }
@@ -867,8 +877,8 @@ public class DribbbleShot extends Activity {
                         likeHeart.setVisibility(View.VISIBLE);
                         likesCount.setVisibility(View.VISIBLE);
                         if (comment.liked == null) {
-                            dribbbleApi.likedComment(shot.id, comment.id, new retrofit
-                                    .Callback<Like>() {
+                            dribbbleApi.likedComment(shot.id, comment.id,
+                                    new retrofit.Callback<Like>() {
                                 @Override
                                 public void success(Like like, Response response) {
                                     comment.liked = true;
@@ -884,7 +894,7 @@ public class DribbbleShot extends Activity {
                                 }
                             });
                         }
-                        if (enterComment.hasFocus()) {
+                        if (enterComment != null && enterComment.hasFocus()) {
                             enterComment.clearFocus();
                             ImeUtils.hideIme(enterComment);
                         }

@@ -60,5 +60,10 @@ class RouterTest {
 
     }
 
-    // TODO test for dynamic route changes
+    @Test
+    fun dynamicRouteChanges() {
+
+        // TODO test for dynamic route changes
+        fail("Test not implemented yet")
+    }
 }

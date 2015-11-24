@@ -17,6 +17,7 @@
 
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:installLocation="auto"
     package="io.plaidapp"
     >
 
@@ -176,18 +177,12 @@
         android:value="GlideModule"
         />
 
-
     <!-- Refactored -->
     <activity
         android:name="com.hannesdorfmann.search.SearchActivity"
-        android:launchMode="singleTop"
         android:theme="@style/Plaid.Translucent.Search"
-        >
-      <meta-data
-          android:name="android.app.searchable"
-          android:resource="@xml/searchable"
-          />
-    </activity>
+        android:launchMode="singleTop"
+        />
 
   </application>
 

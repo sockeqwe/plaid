@@ -15,22 +15,14 @@
   limitations under the License.
   -->
 
-<layer-list
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- orange background -->
-    <item>
-        <color android:color="@color/product_hunt"/>
-    </item>
-
-    <!-- bottom divider -->
-    <item android:height="@dimen/divider_height" android:gravity="bottom">
-        <color android:color="@color/divider"/>
-    </item>
-
-    <!-- right divider -->
-    <item android:width="@dimen/divider_height" android:gravity="end">
-        <color android:color="@color/divider"/>
-    </item>
-
-</layer-list>
+<transition
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    class="io.plaidapp.ui.transitions.Pop"
+    android:fadingMode="fade_out"
+    android:startDelay="500"
+    android:duration="80"
+    android:interpolator="@android:interpolator/fast_out_linear_in">
+    <targets>
+        <target android:targetId="@id/fab" />
+    </targets>
+</transition>

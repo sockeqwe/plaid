@@ -15,22 +15,19 @@
   limitations under the License.
   -->
 
-<layer-list
+<transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- blue background -->
-    <item>
-        <color android:color="@color/designer_news"/>
-    </item>
+    <transition
+        class="io.plaidapp.ui.transitions.Pop"
+        android:duration="@android:integer/config_shortAnimTime"
+        android:startDelay="@android:integer/config_shortAnimTime"
+        android:interpolator="@android:interpolator/fast_out_slow_in">
+        <targets>
+            <target android:targetId="@id/fab" />
+        </targets>
+    </transition>
 
-    <!-- bottom divider -->
-    <item android:height="@dimen/divider_height" android:gravity="bottom">
-        <color android:color="@color/divider"/>
-    </item>
+    <fade />
 
-    <!-- right divider -->
-    <item android:width="@dimen/divider_height" android:gravity="end">
-        <color android:color="@color/divider"/>
-    </item>
-
-</layer-list>
+</transitionSet>
