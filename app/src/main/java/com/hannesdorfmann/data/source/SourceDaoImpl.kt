@@ -42,38 +42,46 @@ class SourceDaoImpl : Dao(), SourceDao {
     }
 
     override fun getAllSources(): Observable<List<Source>> {
-        return query(
-                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
-                        .FROM(TABLE)
-                        .ORDER_BY(COL.ORDER)
-        ).run().mapToList(SourceMapper.MAPPER)
+        return defer {
+            query(
+                    SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
+                            .FROM(TABLE)
+                            .ORDER_BY(COL.ORDER)
+            ).run().mapToList(SourceMapper.MAPPER)
+        }
     }
 
     override fun getEnabledSources(): Observable<List<Source>> {
-        return query(
-                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
-                        .FROM(TABLE)
-                        .WHERE("${COL.ENABLED} = 1")
-                        .ORDER_BY(COL.ORDER)
-        ).run().mapToList(SourceMapper.MAPPER)
+        return defer {
+            query(
+                    SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
+                            .FROM(TABLE)
+                            .WHERE("${COL.ENABLED} = 1")
+                            .ORDER_BY(COL.ORDER)
+            ).run().mapToList(SourceMapper.MAPPER)
+        }
     }
 
     override fun getSourcesForBackend(backendId: Int): Observable<List<Source>> {
-        return query(
-                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
-                        .FROM(TABLE)
-                        .WHERE("${COL.BACKEND_ID} = ?")
-        ).args(backendId.toString()).run().mapToList(SourceMapper.MAPPER)
+        return defer {
+            query(
+                    SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
+                            .FROM(TABLE)
+                            .WHERE("${COL.BACKEND_ID} = ?")
+            ).args(backendId.toString()).run().mapToList(SourceMapper.MAPPER)
+        }
     }
 
     override fun getById(id: Long): Observable<Source?> {
-        return query(
-                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
-                        .FROM(TABLE)
-                        .WHERE("${COL.ID} = ?")
-        ).args(id.toString())
-                .run()
-                .mapToOneOrDefault(SourceMapper.MAPPER, null)
+        return defer {
+            query(
+                    SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
+                            .FROM(TABLE)
+                            .WHERE("${COL.ID} = ?")
+            ).args(id.toString())
+                    .run()
+                    .mapToOneOrDefault(SourceMapper.MAPPER, null)
+        }
     }
 
     override fun insert(source: Source): Observable<Long> {
@@ -93,7 +101,7 @@ class SourceDaoImpl : Dao(), SourceDao {
                 .backendId(source.backendId)
                 .build()
 
-        return insert(TABLE, cv).doOnNext { source.id = it } // set the id correctly in case of assigned by AUTO_INCREMENT
+        return defer { insert(TABLE, cv).doOnNext { source.id = it } } // set the id correctly in case of assigned by AUTO_INCREMENT
     }
 
     override fun update(id: Long, order: Int, enabled: Boolean): Observable<Int> {
@@ -102,11 +110,11 @@ class SourceDaoImpl : Dao(), SourceDao {
                 .enabled(enabled)
                 .build()
 
-        return update(TABLE, cv, "${COL.ID} = ?", id.toString())
+        return defer { update(TABLE, cv, "${COL.ID} = ?", id.toString()) }
     }
 
     override fun delete(id: Long): Observable<Int> {
-        return delete(TABLE, "${COL.ID} = ?", id.toString())
+        return defer {delete(TABLE, "${COL.ID} = ?", id.toString()) }
     }
 
     override fun clear(): Observable<Int> {
@@ -118,6 +126,15 @@ class SourceDaoImpl : Dao(), SourceDao {
                 .enabled(enabled)
                 .build()
 
-        return update(TABLE, cv, "${COL.ID} = ?", sourceId.toString())
+        return defer { update(TABLE, cv, "${COL.ID} = ?", sourceId.toString()) }
+    }
+
+    /**
+     * Little helper class to create a deferred observable
+     */
+    private fun  <T> defer(creation: () -> Observable<T>): Observable<T> {
+        return Observable.defer {
+            creation()
+        }
     }
 }

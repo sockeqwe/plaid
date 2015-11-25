@@ -40,12 +40,13 @@ class SourceFilterPresenterImpl(val sourceDao: SourceDao, val presentationModelM
                 {
                     view?.showError(it, true)
                 },
-                {
-
+                { // onNext Not needed
                 },
-                {},
-                false) // Don't cancel when view gets destroyed
+                { // onCompleted not needed
+                },
+                false) // Don't cancel presenter gets destroyed --> ensures that his completes indipendent of lifecycle
 
 
     }
+
 }
