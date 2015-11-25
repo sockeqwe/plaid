@@ -38,6 +38,7 @@
       android:theme="@style/Plaid"
       android:name="com.hannesdorfmann.PlaidApplication"
       >
+
     <activity
         android:name=".ui.HomeActivity"
         android:label="@string/app_name"
