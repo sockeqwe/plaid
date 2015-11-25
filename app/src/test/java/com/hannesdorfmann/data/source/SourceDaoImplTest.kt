@@ -46,7 +46,13 @@ class SourceDaoImplTest {
     }
 
     fun compareSource(a: Source, b: Source): Boolean {
-        return a.id == b.id && a.order == b.order && a.enabled == b.enabled && a.authenticationRequired == b.authenticationRequired && a.backendId == b.backendId
+        return a.id == b.id
+                && a.order == b.order
+                && a.enabled == b.enabled
+                && a.authenticationRequired == b.authenticationRequired
+                && a.backendId == b.backendId
+                && a.name == b.name
+                && a.nameRes == b.nameRes
     }
 
     fun assertEmptyDatabase() {
@@ -62,10 +68,11 @@ class SourceDaoImplTest {
         val order = 23
         val authenticationRequired = true
         val backendId = 7
+        val name = "Name"
 
         val addSubscriber = TestSubscriber<Long>()
 
-        val source = Source(id, order, enabled, backendId, authenticationRequired)
+        val source = Source(id, name, order, enabled, backendId, authenticationRequired)
         dao.insert(source).subscribe(addSubscriber)
 
         addSubscriber.assertNoErrors()
@@ -96,10 +103,18 @@ class SourceDaoImplTest {
             val enabled = i % 2L == 0L
             val backendId = i.toInt()
             val authenticated = enabled
+            val name = "name" + i
+            val nameRes = i.toInt()
 
 
             val addSubscriber = TestSubscriber<Long>()
-            val toInsert = Source(id, order, enabled, backendId, authenticated)
+
+            val toInsert = if (i.toInt() % 2 == 0) {
+                Source(id, name, order, enabled, backendId, authenticated)
+            } else {
+                Source(id, nameRes, order, enabled, backendId, authenticated)
+            }
+
             dao.insert(toInsert).subscribe(addSubscriber)
 
             addSubscriber.assertNoErrors()
@@ -126,18 +141,20 @@ class SourceDaoImplTest {
         val order = 23
         val authenticationRequired = true
         val backendId = 6
+        val name = "name"
 
         val otherId = 4L
         val otherEnabled = true
         val otherOrder = 7
         val otherAuthenticationRequired = false
         val otherBackendId = 7
+        val otherName = "newName"
 
         // Insert
         val addSubscriber = TestSubscriber<Long>()
         val otherAddSubscriber = TestSubscriber<Long>()
-        val original = Source(id, order, enabled, backendId, authenticationRequired)
-        val other = Source(otherId, otherOrder, otherEnabled, otherBackendId, otherAuthenticationRequired)
+        val original = Source(id, name, order, enabled, backendId, authenticationRequired)
+        val other = Source(otherId, otherName, otherOrder, otherEnabled, otherBackendId, otherAuthenticationRequired)
 
         dao.insert(original).subscribe(addSubscriber)
         addSubscriber.assertNoErrors()
@@ -171,6 +188,7 @@ class SourceDaoImplTest {
         assertEquals(uEnabled, requeriedOriginal!!.enabled)
         assertEquals(backendId, requeriedOriginal!!.backendId) // BackendId not changeable
         assertEquals(authenticationRequired, requeriedOriginal!!.authenticationRequired) // authentication not changeable
+        assertEquals(name, requeriedOriginal!!.name)
 
         val requeriedOther = dao.getById(otherId).toBlocking().first()
         assertNotNull(requeriedOther)
@@ -187,18 +205,20 @@ class SourceDaoImplTest {
         val order = 23
         val authenticationRequired = true
         val backendId = 5
+        val name = "name"
 
         val otherId = 4L
         val otherEnabled = true
         val otherOrder = 7
         val otherAuthenticationRequired = false
         val otherBackendId = 9
+        val otherName = "otherName"
 
         // Insert
         val addSubscriber = TestSubscriber<Long>()
         val otherAddSubscriber = TestSubscriber<Long>()
-        val original = Source(id, order, enabled, backendId, authenticationRequired)
-        val other = Source(otherId, otherOrder, otherEnabled, otherBackendId, otherAuthenticationRequired)
+        val original = Source(id, name, order, enabled, backendId, authenticationRequired)
+        val other = Source(otherId, otherName, otherOrder, otherEnabled, otherBackendId, otherAuthenticationRequired)
 
         dao.insert(original).subscribe(addSubscriber)
         addSubscriber.assertNoErrors()
@@ -242,7 +262,12 @@ class SourceDaoImplTest {
 
         for (i in 1..enabledCount) {
             val addSubscriber = TestSubscriber<Long>()
-            val source = Source(id, id.toInt(), true, 1, false)
+            val source = if (i.toInt() % 2 == 0 ) {
+                Source(id, "name" + i.toInt(), i.toInt(), true, 1, false)
+            } else {
+                Source(id, i.toInt(), i.toInt(), true, 1, false)
+            }
+
             enabledSources.add(source)
             dao.insert(source).subscribe(addSubscriber)
             addSubscriber.assertNoErrors()
@@ -254,7 +279,11 @@ class SourceDaoImplTest {
 
         for (i in 1..notEnabledCount) {
             val addSubscriber = TestSubscriber<Long>()
-            val source = Source(id, id.toInt(), false, 1, true)
+            val source = if (i.toInt() % 2 == 0 ) {
+                Source(id, "name" + i.toInt(), id.toInt(), false, 1, true)
+            } else {
+                Source(id, i.toInt(), id.toInt(), false, 1, true)
+            }
             notEnabledSources.add(source)
             dao.insert(source).subscribe(addSubscriber)
             addSubscriber.assertNoErrors()
@@ -303,14 +332,14 @@ class SourceDaoImplTest {
         }
 
         for (i in 0..sourcesCount - 1) {
-            val s = Source(i.toLong(), i, enabledFun(i), backend1, true)
+            val s = Source(i.toLong(), i, i, enabledFun(i), backend1, true)
             dao.insert(s).toBlocking()
             backend1Sources.add(s)
         }
 
 
         for (i in sourcesCount..2 * sourcesCount - 1) {
-            val s = Source(i.toLong(), i, enabledFun(i), backend2, true)
+            val s = Source(i.toLong(), i, i, enabledFun(i), backend2, true)
             dao.insert(s).toBlocking()
             backend2Sources.add(s)
         }
@@ -345,6 +374,5 @@ class SourceDaoImplTest {
 
 
     }
-
 
 }

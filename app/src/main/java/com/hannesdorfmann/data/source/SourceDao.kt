@@ -51,4 +51,9 @@ interface SourceDao {
      */
     fun clear(): Observable<Int>
 
+    /**
+     * Enable or disable a source
+     */
+    fun enableSource(source: Long, enabled: Boolean): Observable<Int>
+
 }

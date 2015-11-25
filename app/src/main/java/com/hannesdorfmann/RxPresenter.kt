@@ -20,18 +20,20 @@ open class RxPresenter <V : MvpView, M>(protected val scheduler: SchedulerTransf
     protected fun subscribe(observable: Observable<M>,
                             onError: (Throwable) -> Unit,
                             onNext: (M) -> Unit,
-                            onComplete: (() -> Unit)? = null): Subscription {
+                            onComplete: (() -> Unit)? = null, unsubscribeAutomatically: Boolean = true): Subscription {
 
 
-        if (onComplete == null) {
-            val sub = observable.compose(scheduler).subscribe(onNext, onError);
-            subscribers.add(sub)
-            return sub
+        val sub = if (onComplete == null) {
+            observable.compose(scheduler).subscribe(onNext, onError);
         } else {
-            val sub = observable.compose(scheduler).subscribe(onNext, onError, onComplete)
-            subscribers.add(sub)
-            return sub
+            observable.compose(scheduler).subscribe(onNext, onError, onComplete)
         }
+
+        if (unsubscribeAutomatically) {
+            subscribers.add(sub)
+        }
+
+        return sub
     }
 
     override fun detachView(retainInstance: Boolean) {

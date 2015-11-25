@@ -27,4 +27,10 @@ class BackendManager(val dribbbleBackend: DribbbleService,
         else -> throw IllegalArgumentException("Unknown Backend for id = ${backendId}")
     }
 
+    fun getBackendIconRes(@BackendId backendId: Int) = when (backendId) {
+        ID.DRIBBBLE -> 1
+        ID.DESIGNER_NEWS -> 2
+        ID.PRODUCT_HUNT -> 3
+        else -> throw IllegalArgumentException("Unknown Backend for id = ${backendId}")
+    }
 }

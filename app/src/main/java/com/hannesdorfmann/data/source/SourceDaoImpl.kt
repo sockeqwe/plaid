@@ -18,6 +18,8 @@ class SourceDaoImpl : Dao(), SourceDao {
         const val ENABLED = "enabled"
         const val AUTH_REQUIRED = "authRequired"
         const val BACKEND_ID = "backendId"
+        const val NAME = "name"
+        const val NAME_RES = "nameRes"
     }
 
 
@@ -30,7 +32,9 @@ class SourceDaoImpl : Dao(), SourceDao {
                 "${COL.ENABLED} BOOLEAN",
                 "${COL.AUTH_REQUIRED} BOOLEAN",
                 "${COL.ORDER} INTEGER",
-                "${COL.BACKEND_ID} INTEGER NOT NULL")
+                "${COL.BACKEND_ID} INTEGER NOT NULL",
+                "${COL.NAME} TEXT",
+                "${COL.NAME_RES} INTEGER")
                 .execute(database)
     }
 
@@ -39,7 +43,7 @@ class SourceDaoImpl : Dao(), SourceDao {
 
     override fun getAllSources(): Observable<List<Source>> {
         return query(
-                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID)
+                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
                         .FROM(TABLE)
                         .ORDER_BY(COL.ORDER)
         ).run().mapToList(SourceMapper.MAPPER)
@@ -47,7 +51,7 @@ class SourceDaoImpl : Dao(), SourceDao {
 
     override fun getEnabledSources(): Observable<List<Source>> {
         return query(
-                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID)
+                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
                         .FROM(TABLE)
                         .WHERE("${COL.ENABLED} = 1")
                         .ORDER_BY(COL.ORDER)
@@ -56,7 +60,7 @@ class SourceDaoImpl : Dao(), SourceDao {
 
     override fun getSourcesForBackend(backendId: Int): Observable<List<Source>> {
         return query(
-                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID)
+                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
                         .FROM(TABLE)
                         .WHERE("${COL.BACKEND_ID} = ?")
         ).args(backendId.toString()).run().mapToList(SourceMapper.MAPPER)
@@ -64,7 +68,7 @@ class SourceDaoImpl : Dao(), SourceDao {
 
     override fun getById(id: Long): Observable<Source?> {
         return query(
-                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID)
+                SELECT(COL.ID, COL.ENABLED, COL.ORDER, COL.AUTH_REQUIRED, COL.BACKEND_ID, COL.NAME, COL.NAME_RES)
                         .FROM(TABLE)
                         .WHERE("${COL.ID} = ?")
         ).args(id.toString())
@@ -77,8 +81,14 @@ class SourceDaoImpl : Dao(), SourceDao {
 
         // NO id set, so use sql AUTO_INCREMENT
         if (source.id != Source.ID.UNKNOWN_ID) builder.id(source.id).enabled(source.enabled)
+        if (source.name == null) {
+            builder.nameAsNull()
+        } else {
+            builder.name(source.name)
+        }
 
-        val cv = builder.order(source.order)
+        val cv = builder.nameRes(source.nameRes)
+                .order(source.order)
                 .authenticationRequired(source.authenticationRequired)
                 .backendId(source.backendId)
                 .build()
@@ -101,5 +111,13 @@ class SourceDaoImpl : Dao(), SourceDao {
 
     override fun clear(): Observable<Int> {
         return delete(TABLE)
+    }
+
+    override fun enableSource(sourceId: Long, enabled: Boolean): Observable<Int> {
+        val cv = SourceMapper.contentValues()
+                .enabled(enabled)
+                .build()
+
+        return update(TABLE, cv, "${COL.ID} = ?", sourceId.toString())
     }
 }

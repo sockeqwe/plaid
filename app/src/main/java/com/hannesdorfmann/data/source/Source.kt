@@ -41,12 +41,30 @@ class Source() { // Unfortunately data class not supported yet by sqlbrite-dao
     @Column(SourceDaoImpl.COL.BACKEND_ID)
     var backendId: Int = -1
 
-    constructor(id: Long = ID.UNKNOWN_ID, order: Int, enabled: Boolean, backendId: Int, authenticationRequired: Boolean) : this() {
+    @Column(SourceDaoImpl.COL.NAME)
+    var name: String? = null
+
+    @Column(SourceDaoImpl.COL.NAME_RES)
+    var nameRes: Int = -1
+
+    constructor(id: Long = ID.UNKNOWN_ID, name: String, order: Int, enabled: Boolean, backendId: Int, authenticationRequired: Boolean) : this() {
         this.id = id
         this.order = order
         this.enabled = enabled
         this.authenticationRequired = authenticationRequired
         this.backendId = backendId
+        this.name = name
+    }
+
+
+    constructor(id: Long = ID.UNKNOWN_ID, nameRes: Int, order: Int, enabled: Boolean, backendId: Int, authenticationRequired: Boolean) : this() {
+        this.id = id
+        this.order = order
+        this.enabled = enabled
+        this.authenticationRequired = authenticationRequired
+        this.backendId = backendId
+        this.name = name
+        this.nameRes = nameRes
     }
 
 

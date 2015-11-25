@@ -1,0 +1,38 @@
+package com.hannesdorfmann.home.sources
+
+import android.content.Context
+import android.support.annotation.DrawableRes
+import android.support.annotation.StringRes
+import com.hannesdorfmann.data.source.Source
+import java.util.*
+
+
+data class SourceFilterPresentationModel(
+        val sourceId: Long,
+        val iconRes: Int,
+        val text: String,
+        val enabled: Boolean)
+
+/**
+ * Maps a list of [Source] to  a list of [SourceFilterPresentationModel]
+ */
+class SourceToPresentationModelMapper(private val context: Context, private val backendToIconMap: (Int) -> Int) : (List<Source>) -> List<SourceFilterPresentationModel> {
+
+
+    override fun invoke(sources: List<Source>): List<SourceFilterPresentationModel> {
+        val presentationModels = ArrayList<SourceFilterPresentationModel>()
+
+        sources.forEach { source ->
+            val name =
+                    if (source.name == null) {
+                        context.resources.getString(source.nameRes)
+                    } else {
+                        source.name!!
+                    }
+
+            presentationModels.add(SourceFilterPresentationModel(source.id, backendToIconMap(source.backendId), name, source.enabled))
+        }
+
+        return presentationModels
+    }
+}
