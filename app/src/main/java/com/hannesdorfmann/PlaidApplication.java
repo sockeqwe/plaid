@@ -15,7 +15,7 @@ public class PlaidApplication extends Application {
   @Override public void onCreate() {
     super.onCreate();
 
-    objectGraph = ObjectGraph.create(new ApplicationModule());
+    objectGraph = ObjectGraph.create(new ApplicationModule(this));
   }
 
   public static ObjectGraph getObjectGraph(Context context) {

@@ -1,6 +1,10 @@
 package com.hannesdorfmann;
 
 import android.content.Context;
+import com.hannesdorfmann.data.backend.BackendManager;
+import com.hannesdorfmann.data.source.SourceDao;
+import com.hannesdorfmann.data.source.SourceDaoImpl;
+import com.hannesdorfmann.sqlbrite.dao.DaoManager;
 import com.squareup.okhttp.OkHttpClient;
 import dagger.Module;
 import dagger.Provides;
@@ -24,9 +28,15 @@ import retrofit.client.OkClient;
   }
 
   private Context context;
+  private SourceDao sourceDao;
 
   public ApplicationModule(Context context) {
     this.context = context.getApplicationContext();
+
+    SourceDaoImpl sDao = new SourceDaoImpl();
+    new DaoManager(this.context, "Sources", 1, sDao);
+
+    sourceDao = sDao;
   }
 
   @Provides @Singleton @ApplicationContext public Context provideApplicationContext() {
@@ -54,5 +64,13 @@ import retrofit.client.OkClient;
         .build();
 
     return adapter.create(DesignerNewsService.class);
+  }
+
+  @Provides @Singleton public SourceDao provideSourceDao() {
+    return sourceDao;
+  }
+
+  @Provides @Singleton public BackendManager backendManager() {
+    return new BackendManager();
   }
 }
