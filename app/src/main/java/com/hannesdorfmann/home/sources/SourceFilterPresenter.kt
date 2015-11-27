@@ -1,11 +1,13 @@
 package com.hannesdorfmann.home.sources
 
+import com.hannesdorfmann.mosby.mvp.MvpPresenter
+
 /**
  *
  *
  * @author Hannes Dorfmann
  */
-interface SourceFilterPresenter {
+interface SourceFilterPresenter : MvpPresenter<SourceFilterView> {
 
     fun loadSources();
 

@@ -141,5 +141,6 @@
       translatable="false">io.plaidapp.shareprovider</string>
 
   <string name="error_more_search_results">An error loading has occurred while loading more results</string>
+  <string name="error_database">An error has occurred</string>
 
 </resources>

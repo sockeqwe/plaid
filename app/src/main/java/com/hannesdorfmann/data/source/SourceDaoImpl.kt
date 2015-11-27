@@ -130,7 +130,7 @@ class SourceDaoImpl : Dao(), SourceDao {
     }
 
     /**
-     * Little helper class to create a deferred observable
+     * Little helper function to create a deferred observable
      */
     private fun  <T> defer(creation: () -> Observable<T>): Observable<T> {
         return Observable.defer {
