@@ -1,8 +1,12 @@
 package com.hannesdorfmann.data.source
 
+import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import com.hannesdorfmann.data.backend.BackendManager
 import com.hannesdorfmann.sqlbrite.dao.Dao
+import io.plaidapp.R
 import rx.Observable
+import java.util.logging.Handler
 
 /**
  *
@@ -25,7 +29,7 @@ class SourceDaoImpl : Dao(), SourceDao {
 
     private val TABLE = "Source"
 
-    override fun createTable(database: SQLiteDatabase?) {
+    override fun createTable(database: SQLiteDatabase) {
         CREATE_TABLE(
                 TABLE,
                 "${COL.ID} INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL",
@@ -36,6 +40,30 @@ class SourceDaoImpl : Dao(), SourceDao {
                 "${COL.NAME} TEXT",
                 "${COL.NAME_RES} INTEGER")
                 .execute(database)
+
+        insertDefaultSources(database);
+    }
+
+    private fun insertDefaultSources(database: SQLiteDatabase) {
+
+
+        val sources = arrayListOf(Source(-1, R.string.source_designer_news_popular, 100, true, BackendManager.ID.DESIGNER_NEWS, false),
+                Source(-2, R.string.source_designer_news_recent, 101, false, BackendManager.ID.DESIGNER_NEWS, false),
+                Source(-3, R.string.source_dribbble_popular, 200, true, BackendManager.ID.DRIBBBLE, false),
+                Source(-4, R.string.source_dribbble_following, 201, false, BackendManager.ID.DRIBBBLE, true),
+                Source(-5, R.string.source_dribbble_user_shots, 202, false, BackendManager.ID.DRIBBBLE, true),
+                Source(-6, R.string.source_dribbble_user_likes, 203, true, BackendManager.ID.DRIBBBLE, true),
+                Source(-7, R.string.source_dribbble_recent, 204, false, BackendManager.ID.DRIBBBLE, false),
+                Source(-8, R.string.source_dribbble_debuts, 205, false, BackendManager.ID.DRIBBBLE, false),
+                Source(-9, R.string.source_dribbble_animated, 206, true, BackendManager.ID.DRIBBBLE, false),
+                Source(-10, R.string.source_dribbble_search_material_design, 207, false, BackendManager.ID.DRIBBBLE, false),
+                Source(-11, R.string.source_product_hunt, 300, true, BackendManager.ID.PRODUCT_HUNT, false)
+        )
+
+        sources.forEach {
+            database.insert(TABLE, null, insertContentValues(it))
+        }
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -84,11 +112,14 @@ class SourceDaoImpl : Dao(), SourceDao {
         }
     }
 
-    override fun insert(source: Source): Observable<Long> {
-        val builder = SourceMapper.contentValues();
+    private fun insertContentValues(source: Source): ContentValues {
 
+
+        val builder = SourceMapper.contentValues();
         // NO id set, so use sql AUTO_INCREMENT
-        if (source.id != Source.ID.UNKNOWN_ID) builder.id(source.id).enabled(source.enabled)
+        if (source.id != Source.ID.UNKNOWN_ID) {
+            builder.id(source.id).enabled(source.enabled)
+        }
         if (source.name == null) {
             builder.nameAsNull()
         } else {
@@ -100,6 +131,13 @@ class SourceDaoImpl : Dao(), SourceDao {
                 .authenticationRequired(source.authenticationRequired)
                 .backendId(source.backendId)
                 .build()
+
+        return cv
+    }
+
+    override fun insert(source: Source): Observable<Long> {
+
+        val cv = insertContentValues(source)
 
         return defer { insert(TABLE, cv).doOnNext { source.id = it } } // set the id correctly in case of assigned by AUTO_INCREMENT
     }
@@ -114,7 +152,7 @@ class SourceDaoImpl : Dao(), SourceDao {
     }
 
     override fun delete(id: Long): Observable<Int> {
-        return defer {delete(TABLE, "${COL.ID} = ?", id.toString()) }
+        return defer { delete(TABLE, "${COL.ID} = ?", id.toString()) }
     }
 
     override fun clear(): Observable<Int> {

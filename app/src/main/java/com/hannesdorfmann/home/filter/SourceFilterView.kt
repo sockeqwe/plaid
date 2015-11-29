@@ -1,4 +1,4 @@
-package com.hannesdorfmann.home.sources
+package com.hannesdorfmann.home.filter
 
 import com.hannesdorfmann.mosby.mvp.lce.MvpLceView
 

@@ -1,5 +1,6 @@
 package com.hannesdorfmann.data.backend
 
+import io.plaidapp.R
 import io.plaidapp.data.api.designernews.DesignerNewsService
 import io.plaidapp.data.api.dribbble.DribbbleService
 import io.plaidapp.data.api.producthunt.ProductHuntService
@@ -18,9 +19,9 @@ class BackendManager {
     }
 
     val getBackendIconRes = fun(@BackendId backendId: Int) = when (backendId) {
-        ID.DRIBBBLE -> 1
-        ID.DESIGNER_NEWS -> 2
-        ID.PRODUCT_HUNT -> 3
+        ID.DRIBBBLE -> R.drawable.ic_dribbble
+        ID.DESIGNER_NEWS -> R.drawable.ic_designer_news
+        ID.PRODUCT_HUNT -> R.drawable.ic_product_hunt
         else -> throw IllegalArgumentException("Unknown Backend for id = ${backendId}")
     }
 }

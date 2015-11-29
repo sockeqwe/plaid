@@ -20,20 +20,18 @@ class SearchViewState : ViewState<SearchView> {
     private var items: List<PlaidItem>? = null
     private var loadingMore = false
 
-    override fun apply(view: SearchView, retained: Boolean) {
+    override fun apply(view: SearchView, retained: Boolean) =
 
-        when (state) {
-            State.SHOW_SEARCH_NOT_STARTED -> view.showSearchNotStarted()
-            State.SHOW_LOADING -> view.showLoading()
-            State.SHOW_ERROR -> view.showError(exception!!)
-            State.SHOW_CONTENT -> {
-                view.setContentItems(items!!)
-                view.showLoadingMore(loadingMore)
-                view.showContent()
+            when (state) {
+                State.SHOW_SEARCH_NOT_STARTED -> view.showSearchNotStarted()
+                State.SHOW_LOADING -> view.showLoading()
+                State.SHOW_ERROR -> view.showError(exception!!)
+                State.SHOW_CONTENT -> {
+                    view.setContentItems(items!!)
+                    view.showLoadingMore(loadingMore)
+                    view.showContent()
+                }
             }
-        }
-
-    }
 
     fun setShowSearchNotStarted() {
         state = State.SHOW_SEARCH_NOT_STARTED

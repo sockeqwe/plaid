@@ -1,4 +1,4 @@
-package com.hannesdorfmann.home.sources
+package com.hannesdorfmann.home.filter
 
 import android.content.Context
 import android.support.annotation.DrawableRes

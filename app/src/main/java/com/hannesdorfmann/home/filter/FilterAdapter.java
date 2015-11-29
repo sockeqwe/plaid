@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hannesdorfmann.home.sources;
+package com.hannesdorfmann.home.filter;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -59,6 +59,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
 
   public FilterAdapter(@NonNull SourceFilterClickedListener clickedListener) {
     setHasStableIds(true);
+    this.clickedListener = clickedListener;
   }
 
   public List<SourceFilterPresentationModel> getFilters() {

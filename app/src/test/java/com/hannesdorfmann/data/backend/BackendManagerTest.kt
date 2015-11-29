@@ -6,6 +6,8 @@ import io.plaidapp.data.api.producthunt.ProductHuntService
 import org.junit.Test
 import org.mockito.Mockito
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.fail
 
 /**
  *
@@ -14,21 +16,8 @@ import kotlin.test.assertEquals
  */
 class BackendManagerTest {
 
-    val dribbble = Mockito.mock(DribbbleService::class.java)
-    val productHunt = Mockito.mock(ProductHuntService::class.java)
-    val designerNews = Mockito.mock(DesignerNewsService::class.java)
-    val manager = BackendManager(dribbble, productHunt, designerNews)
-
     @Test
-    fun getBackendById() {
-        assertEquals(dribbble, manager.getBackend(BackendManager.ID.DRIBBBLE))
-        assertEquals(designerNews, manager.getBackend(BackendManager.ID.DESIGNER_NEWS))
-        assertEquals(productHunt, manager.getBackend(BackendManager.ID.PRODUCT_HUNT))
+    fun test() {
+        fail("not implemented yet")
     }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun getUnknownBackend() {
-        manager.getBackend(9999) // Throws illegal Argument Exception
-    }
-
 }

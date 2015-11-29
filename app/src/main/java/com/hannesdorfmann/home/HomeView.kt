@@ -9,20 +9,21 @@ import io.plaidapp.data.PlaidItem
  *
  * @author Hannes Dorfmann
  */
-interface HomeView : MvpLceView<List<PlaidItem>> {
+interface HomeView : MvpView {
 
-    /**
-     * Show the loading indicator that the next page (older items) are loaded right now
-     */
-    fun showLoadingOlderItems()
+    fun showLoading()
 
-    /**
-     * Hide the loading indicator that the next page is
-     */
-    fun hideLoadingOlderPage()
+    fun showContent()
 
-    /**
-     * Adds older items to display on screen
-     */
+    fun showError()
+
+    fun setContentItems(items: List<PlaidItem>)
+
+    fun showLoadingMore(showing: Boolean)
+
+    fun showLoadingMoreError(t: Throwable)
+
     fun addOlderItems(items: List<PlaidItem>)
+
+    fun showNoFiltersSelected();
 }

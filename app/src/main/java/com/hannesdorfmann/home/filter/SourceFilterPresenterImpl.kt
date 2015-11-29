@@ -1,9 +1,9 @@
-package com.hannesdorfmann.home.sources
+package com.hannesdorfmann.home.filter
 
 import com.hannesdorfmann.RxPresenter
 import com.hannesdorfmann.data.source.Source
 import com.hannesdorfmann.data.source.SourceDao
-import com.hannesdorfmann.home.sources.SourceFilterPresentationModel
+import com.hannesdorfmann.home.filter.SourceFilterPresentationModel
 import com.hannesdorfmann.scheduler.SchedulerTransformer
 import rx.Observable
 
@@ -22,6 +22,7 @@ class SourceFilterPresenterImpl(val sourceDao: SourceDao, val presentationModelM
                 sourceDao.getAllSources().map(presentationModelMapper),
                 // onError
                 {
+                    it.printStackTrace()
                     view?.showError(it, false)
                 },
                 // onNext

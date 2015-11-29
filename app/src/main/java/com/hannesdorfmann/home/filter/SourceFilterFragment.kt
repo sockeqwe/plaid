@@ -1,8 +1,11 @@
-package com.hannesdorfmann.home.sources
+package com.hannesdorfmann.home.filter
 
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.hannesdorfmann.PlaidApplication
 import com.hannesdorfmann.mosby.mvp.viewstate.lce.LceViewState
 import com.hannesdorfmann.mosby.mvp.viewstate.lce.MvpLceViewStateFragment
@@ -24,9 +27,15 @@ class SourceFilterFragment : SourceFilterView, MvpLceViewStateFragment<RecyclerV
         retainInstance = true
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(io.plaidapp.R.layout.fragment_source_filter, container, false)
+    }
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = FilterAdapter(this)
+        contentView.adapter = adapter
+        contentView.layoutManager = LinearLayoutManager(activity)
     }
 
     override fun getData(): List<SourceFilterPresentationModel>? {
@@ -38,7 +47,7 @@ class SourceFilterFragment : SourceFilterView, MvpLceViewStateFragment<RecyclerV
     }
 
     override fun getErrorMessage(e: Throwable?, pullToRefresh: Boolean): String? {
-        return resources.getString(1)
+        return resources.getString(io.plaidapp.R.string.error_database)
     }
 
     override fun loadData(pullToRefresh: Boolean) {

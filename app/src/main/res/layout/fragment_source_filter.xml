@@ -2,12 +2,20 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_dark"
     >
 
   <android.support.v7.widget.RecyclerView
       android:id="@+id/contentView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:scrollbars="vertical"
+      android:scrollbarStyle="outsideOverlay"
+      android:paddingTop="@dimen/spacing_normal"
+      android:paddingBottom="@dimen/spacing_normal"
+      android:elevation="@dimen/z_drawer"
+      android:clipToPadding="false"
+      android:fitsSystemWindows="true"
       />
 
   <TextView
@@ -16,6 +24,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:padding="16dp"
+      android:textColor="@color/filter_text"
       />
 
   <ProgressBar

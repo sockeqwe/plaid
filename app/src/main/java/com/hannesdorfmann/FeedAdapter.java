@@ -547,4 +547,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
       progress = (ProgressBar) itemView;
     }
   }
+
+
+  /**
+   * Which ViewHolder types require a divider decoration
+   */
+  public Class[] getDividedViewHolderClasses() {
+    return new Class[] { DesignerNewsStoryHolder.class, ProductHuntStoryHolder.class };
+  }
 }
