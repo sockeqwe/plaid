@@ -107,10 +107,7 @@ class HomeDribbbleBackendCallFactory(private val backend: DribbbleService, sourc
     val getPopular = fun(pageOffset: Int, itemsPerPage: Int): Observable<List<PlaidItem>> {
         return backend.getPopular(pageOffset, itemsPerPage).doOnNext {
             Log.d("Test", "getPopular() doOnNext ${it}")
-        }. doOnError {
-            it.printStackTrace()
-            Log.d("Test", "getPopular() doOnError ${it}")
-        }as Observable<List<PlaidItem>>
+        } as Observable<List<PlaidItem>>
     }
 
     val getFollowing = fun(pageOffset: Int, itemsPerPage: Int): Observable<List<PlaidItem>> {

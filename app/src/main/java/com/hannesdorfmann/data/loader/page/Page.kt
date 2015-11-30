@@ -30,11 +30,16 @@ abstract class Page<T>(val routeCalls: Observable<List<RouteCaller<T>>>) {
 
         return routeCalls.flatMap { routeCalls ->
 
+            backendCallsCount = routeCalls.size
+
             val observables = arrayListOf<Observable<T>>()
 
             routeCalls.forEach { call ->
                 val observable = getRouteCall(call).onErrorResumeNext { error -> // Suppress errors as long as not all fail
+                    error.printStackTrace()
                     val fails = failed.incrementAndGet()
+                    Log.d("Test", "Page: onErrorResumeNext() failed: ${fails}, total calls: ${backendCallsCount}")
+
                     if (fails == backendCallsCount) {
                         Observable.error(error) // All failed so emmit error
                     } else {
@@ -50,7 +55,6 @@ abstract class Page<T>(val routeCalls: Observable<List<RouteCaller<T>>>) {
             }
         }
     }
-
 
     @RxLogObservable
     protected abstract fun getRouteCall(caller: RouteCaller<T>): Observable<T>
