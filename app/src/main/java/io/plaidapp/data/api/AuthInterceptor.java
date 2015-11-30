@@ -16,6 +16,7 @@
 
 package io.plaidapp.data.api;
 
+import android.text.TextUtils;
 import retrofit.RequestInterceptor;
 
 /**
@@ -23,18 +24,19 @@ import retrofit.RequestInterceptor;
  */
 public class AuthInterceptor implements RequestInterceptor {
 
-    private String accessToken;
+  private String accessToken;
 
-    public AuthInterceptor(String accessToken) {
-        this.accessToken = accessToken;
-    }
+  public AuthInterceptor(String accessToken) {
+    this.accessToken = accessToken;
+  }
 
-    @Override
-    public void intercept(RequestFacade request) {
-        request.addHeader("Authorization", "Bearer " + accessToken);
+  @Override public void intercept(RequestFacade request) {
+    if (!TextUtils.isEmpty(accessToken)) {
+      request.addHeader("Authorization", "Bearer " + accessToken);
     }
+  }
 
-    private void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
+  private void setAccessToken(String accessToken) {
+    this.accessToken = accessToken;
+  }
 }

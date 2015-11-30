@@ -8,6 +8,8 @@ import com.hannesdorfmann.sqlbrite.dao.DaoManager;
 import com.squareup.okhttp.OkHttpClient;
 import dagger.Module;
 import dagger.Provides;
+import io.plaidapp.BuildConfig;
+import io.plaidapp.data.api.AuthInterceptor;
 import io.plaidapp.data.api.designernews.DesignerNewsService;
 import io.plaidapp.data.api.dribbble.DribbbleService;
 import java.lang.annotation.Documented;
@@ -52,6 +54,7 @@ import retrofit.client.OkClient;
     RestAdapter adapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL)
         .setClient(new OkClient(okHttpClient))
         .setEndpoint(DribbbleService.ENDPOINT)
+        .setRequestInterceptor(new AuthInterceptor(BuildConfig.DRIBBBLE_CLIENT_ACCESS_TOKEN))
         .build();
 
     return adapter.create(DribbbleService.class);

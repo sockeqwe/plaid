@@ -8,3 +8,4 @@ local.properties
 .gradle
 
 *.hprof
+gradle.properties
