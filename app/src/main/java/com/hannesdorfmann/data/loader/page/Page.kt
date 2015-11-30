@@ -46,11 +46,13 @@ abstract class Page<T>(val routeCalls: Observable<List<RouteCaller<T>>>) {
 
             // return the created Observable
             Observable.merge(observables).doOnNext {
-                Log.d("OkHttp", "merging " + it)
+                Log.d("Test", "merging " + it)
             }
         }
     }
 
+
+    @RxLogObservable
     protected abstract fun getRouteCall(caller: RouteCaller<T>): Observable<T>
 
 }

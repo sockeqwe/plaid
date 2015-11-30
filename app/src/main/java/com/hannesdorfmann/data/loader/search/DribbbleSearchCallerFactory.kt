@@ -21,7 +21,7 @@ class DribbbleSearchCallerFactory(private val searchQurey: String, @DribbbleSear
         }
     }
 
-    private val caller = RouteCaller<List<PlaidItem>>(0, 100, search)
+    private val caller = RouteCaller(0, 100, search)
     private val callers = arrayListOf(caller)
 
     override fun getAllBackendCallers(): Observable<List<RouteCaller<List<PlaidItem>>>> {

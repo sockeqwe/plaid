@@ -20,6 +20,7 @@ class HomePresenterImpl(private val itemsLoader: ItemsLoader<List<PlaidItem>>, s
         subscribe(
                 itemsLoader.firstPage(),
                 { // onError
+                    it.printStackTrace()
                     view?.showError()
                 },
                 { // onNext
@@ -36,6 +37,7 @@ class HomePresenterImpl(private val itemsLoader: ItemsLoader<List<PlaidItem>>, s
         subscribe(
                 itemsLoader.olderPages(),
                 { // onError
+                    it.printStackTrace()
                     view?.showLoadingMoreError(it)
                 },
                 { // onNext

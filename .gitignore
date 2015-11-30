@@ -6,3 +6,5 @@ prebuilts
 .DS_Store
 local.properties
 .gradle
+
+*.hprof

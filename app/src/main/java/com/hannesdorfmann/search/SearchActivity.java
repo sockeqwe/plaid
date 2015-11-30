@@ -49,6 +49,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import butterknife.Bind;
@@ -96,7 +97,7 @@ public class SearchActivity extends MvpViewStateActivity<SearchView, SearchPrese
   @Bind(R.id.save_designer_news) CheckBox saveDesignerNews;
   @Bind(R.id.scrim) View scrim;
   @Bind(R.id.results_scrim) View resultsScrim;
-  @Bind(R.id.error) View errorView;
+  @Bind(R.id.error) ImageView errorView;
   private BaselineGridTextView noResults;
   @BindInt(R.integer.num_columns) int columns;
   @BindDimen(R.dimen.z_app_bar) float appBarElevation;
@@ -572,6 +573,8 @@ public class SearchActivity extends MvpViewStateActivity<SearchView, SearchPrese
     results.setVisibility(View.GONE);
     fab.setVisibility(View.GONE);
     errorView.setVisibility(View.VISIBLE);
+    AnimatedVectorDrawable avd = (AnimatedVectorDrawable) errorView.getDrawable();
+    avd.start();
   }
 
   @Override public void setContentItems(@NotNull List<PlaidItem> items) {

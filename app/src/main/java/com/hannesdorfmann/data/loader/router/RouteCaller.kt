@@ -1,5 +1,6 @@
 package com.hannesdorfmann.data.loader.router
 
+import com.fernandocejas.frodo.annotation.RxLogObservable
 import rx.Observable
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
@@ -29,6 +30,7 @@ class RouteCaller<T>(private val startPage: Int = 0,
     /**
      * Get an observable to load older data from backend.
      */
+    @RxLogObservable
     fun getOlderWithRetry(): Observable<T> {
 
         val pageOffset = if (
@@ -48,6 +50,8 @@ class RouteCaller<T>(private val startPage: Int = 0,
      * Get an observable to load the newest data from backend.
      * This method should be invoked on pull to refresh
      */
+
+    @RxLogObservable
     fun getNewest(): Observable<T> {
         return backendMethodToCall(startPage, itemsPerPage)
     }
@@ -56,6 +60,8 @@ class RouteCaller<T>(private val startPage: Int = 0,
      * Get the first items from backend. This method should be called when
      * loading items for the first time (not load more nor pull to refresh)
      */
+
+    @RxLogObservable
     fun getFirst(): Observable<T> {
         return getNewest()
     }

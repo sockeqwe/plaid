@@ -47,17 +47,17 @@ class SourceDaoImpl : Dao(), SourceDao {
     private fun insertDefaultSources(database: SQLiteDatabase) {
 
 
-        val sources = arrayListOf(Source(-1, R.string.source_designer_news_popular, 100, true, BackendManager.ID.DESIGNER_NEWS, false),
-                Source(-2, R.string.source_designer_news_recent, 101, false, BackendManager.ID.DESIGNER_NEWS, false),
-                Source(-3, R.string.source_dribbble_popular, 200, true, BackendManager.ID.DRIBBBLE, false),
-                Source(-4, R.string.source_dribbble_following, 201, false, BackendManager.ID.DRIBBBLE, true),
-                Source(-5, R.string.source_dribbble_user_shots, 202, false, BackendManager.ID.DRIBBBLE, true),
-                Source(-6, R.string.source_dribbble_user_likes, 203, true, BackendManager.ID.DRIBBBLE, true),
-                Source(-7, R.string.source_dribbble_recent, 204, false, BackendManager.ID.DRIBBBLE, false),
-                Source(-8, R.string.source_dribbble_debuts, 205, false, BackendManager.ID.DRIBBBLE, false),
-                Source(-9, R.string.source_dribbble_animated, 206, true, BackendManager.ID.DRIBBBLE, false),
-                Source(-10, R.string.source_dribbble_search_material_design, 207, false, BackendManager.ID.DRIBBBLE, false),
-                Source(-11, R.string.source_product_hunt, 300, true, BackendManager.ID.PRODUCT_HUNT, false)
+        val sources = arrayListOf(Source(Source.ID.DESIGNER_NEWS_POPULAR, R.string.source_designer_news_popular, 100, true, BackendManager.ID.DESIGNER_NEWS, false),
+                Source(Source.ID.DESIGNER_NEWS_RECENT, R.string.source_designer_news_recent, 101, false, BackendManager.ID.DESIGNER_NEWS, false),
+                Source(Source.ID.DRIBBBLE_POPULAR, R.string.source_dribbble_popular, 200, true, BackendManager.ID.DRIBBBLE, false),
+                Source(Source.ID.DRIBBBLE_FOLLOWING, R.string.source_dribbble_following, 201, false, BackendManager.ID.DRIBBBLE, true),
+                Source(Source.ID.DRIBBLE_MY_SHOTS, R.string.source_dribbble_user_shots, 202, false, BackendManager.ID.DRIBBBLE, true),
+                Source(Source.ID.DRIBBLE_MY_LIKES, R.string.source_dribbble_user_likes, 203, false, BackendManager.ID.DRIBBBLE, true),
+                Source(Source.ID.DRIBBLE_RECENT, R.string.source_dribbble_recent, 204, false, BackendManager.ID.DRIBBBLE, false),
+                Source(Source.ID.DRIBBLE_DEBUTS, R.string.source_dribbble_debuts, 205, false, BackendManager.ID.DRIBBBLE, false),
+                Source(Source.ID.DRIBBLE_ANIMATED, R.string.source_dribbble_animated, 206, true, BackendManager.ID.DRIBBBLE, false),
+                Source(Source.ID.DRIBBLE_MATERIAL, R.string.source_dribbble_search_material_design, 207, false, BackendManager.ID.DRIBBBLE, false),
+                Source(Source.ID.PRODUCT_HUNT, R.string.source_product_hunt, 300, true, BackendManager.ID.PRODUCT_HUNT, false)
         )
 
         sources.forEach {

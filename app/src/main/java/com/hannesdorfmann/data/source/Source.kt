@@ -14,16 +14,17 @@ class Source() { // Unfortunately data class not supported yet by sqlbrite-dao
 
     object ID {
         internal const val UNKNOWN_ID = -1L
-        const val DRIBBBLE_POPULAR = 0L
-        const val DRIBBBLE_FOLLOWING = 1L
-        const val DRIBBLE_MY_SHOTS = 2L
-        const val DRIBBLE_MY_LIKES = 3L
-        const val DRIBBLE_RECENT = 4L
-        const val DRIBBLE_DEBUTS = 5L
-        const val DRIBBLE_ANIMATED = 6L
-        const val DESIGNER_NEWS_POPULAR = 7L
-        const val DESIGNER_NEWS_RECENT = 8L
-        const val PRODUCT_HUNT = 9L
+        const val DESIGNER_NEWS_POPULAR = -2L
+        const val DESIGNER_NEWS_RECENT = -3L
+        const val DRIBBBLE_POPULAR = -4L
+        const val DRIBBBLE_FOLLOWING = -5L
+        const val DRIBBLE_MY_SHOTS = -6L
+        const val DRIBBLE_MY_LIKES = -7L
+        const val DRIBBLE_RECENT = -8L
+        const val DRIBBLE_DEBUTS = -9L
+        const val DRIBBLE_ANIMATED = -10L
+        const val DRIBBLE_MATERIAL = -11L
+        const val PRODUCT_HUNT = -12L
     }
 
     @Column(SourceDaoImpl.COL.ID)
@@ -83,4 +84,7 @@ class Source() { // Unfortunately data class not supported yet by sqlbrite-dao
         return id.hashCode()
     }
 
+    override fun toString(): String {
+        return "id: ${id}, name: ${name}, nameRes: ${nameRes}, enabeld: ${enabled}, order: ${order}, authRequired: ${authenticationRequired}"
+    }
 }
