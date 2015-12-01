@@ -1,5 +1,6 @@
 package com.hannesdorfmann.home
 
+import android.util.Log
 import com.hannesdorfmann.RxPresenter
 import com.hannesdorfmann.data.news.ItemsLoader
 import com.hannesdorfmann.scheduler.SchedulerTransformer
@@ -18,14 +19,20 @@ class HomePresenterImpl(private val itemsLoader: ItemsLoader<List<PlaidItem>>, s
         view?.showLoading()
 
         subscribe(
-                itemsLoader.firstPage(),
+                itemsLoader.firstPage().map { it ?: emptyList() },
                 { // onError
                     it.printStackTrace()
                     view?.showError()
+                    Log.d("Test", "HomePresenter loadItems() onError")
                 },
                 { // onNext
-                    view?.addOlderItems(it)
-                    view?.showContent()
+                    if (it.isEmpty()) {
+                        view.showNoFiltersSelected()
+                    } else {
+                        view?.setContentItems(it)
+                        view?.showContent()
+                    }
+                    Log.d("Test", "HomePresenter loadItems() onNext")
                 }
         )
 
@@ -35,14 +42,16 @@ class HomePresenterImpl(private val itemsLoader: ItemsLoader<List<PlaidItem>>, s
         view?.showLoadingMore(true)
 
         subscribe(
-                itemsLoader.olderPages(),
+                itemsLoader.olderPages().map { it ?: emptyList() },
                 { // onError
                     it.printStackTrace()
                     view?.showLoadingMoreError(it)
+                    Log.d("Test", "HomePresenter loadMore() onError")
                 },
                 { // onNext
-                    view.addOlderItems(it)
-                    view.showLoadingMore(false)
+                    view?.addOlderItems(it)
+                    view?.showLoadingMore(false)
+                    Log.d("Test", "HomePresenter loadMore() onNext")
                 }
         )
     }

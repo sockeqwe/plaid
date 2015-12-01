@@ -26,32 +26,39 @@ abstract class Page<T>(val routeCalls: Observable<List<RouteCaller<T>>>) {
      * Return an observable for this page
      */
     @RxLogObservable
-    fun asObservable(): Observable<T> {
+    fun asObservable(): Observable<T?> {
 
         return routeCalls.flatMap { routeCalls ->
 
             backendCallsCount = routeCalls.size
 
-            val observables = arrayListOf<Observable<T>>()
+            if (backendCallsCount == 0) {
 
-            routeCalls.forEach { call ->
-                val observable = getRouteCall(call).onErrorResumeNext { error -> // Suppress errors as long as not all fail
-                    error.printStackTrace()
-                    val fails = failed.incrementAndGet()
-                    Log.d("Test", "Page: onErrorResumeNext() failed: ${fails}, total calls: ${backendCallsCount}")
+                Observable.just(null)
 
-                    if (fails == backendCallsCount) {
-                        Observable.error(error) // All failed so emmit error
-                    } else {
-                        Observable.empty() // Not all failed, so ignore this error and emit nothing
+            } else {
+
+                val observables = arrayListOf<Observable<T>>()
+
+                routeCalls.forEach { call ->
+                    val observable = getRouteCall(call).onErrorResumeNext { error -> // Suppress errors as long as not all fail
+                        error.printStackTrace()
+                        val fails = failed.incrementAndGet()
+                        Log.d("Test", "Page: onErrorResumeNext() failed: ${fails}, total calls: ${backendCallsCount}")
+
+                        if (fails == backendCallsCount) {
+                            Observable.error(error) // All failed so emmit error
+                        } else {
+                            Observable.empty() // Not all failed, so ignore this error and emit nothing
+                        }
                     }
+                    observables.add(observable);
                 }
-                observables.add(observable);
-            }
 
-            // return the created Observable
-            Observable.merge(observables).doOnNext {
-                Log.d("Test", "merging " + it)
+                // return the created Observable
+                Observable.merge(observables).doOnNext {
+                    Log.d("Test", "merging " + it)
+                }
             }
         }
     }

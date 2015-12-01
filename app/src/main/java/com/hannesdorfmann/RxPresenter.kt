@@ -17,7 +17,7 @@ open class RxPresenter <V : MvpView, M>(protected val scheduler: SchedulerTransf
 
     private var subscribers = CompositeSubscription()
 
-    protected fun subscribe(observable: Observable<M>,
+    protected fun subscribe(observable: Observable<M?>,
                             onError: (Throwable) -> Unit,
                             onNext: (M) -> Unit,
                             onComplete: (() -> Unit)? = null, unsubscribeAutomatically: Boolean = true): Subscription {

@@ -28,7 +28,7 @@ class HomeDribbbleBackendCallFactory(private val backend: DribbbleService, sourc
         /**
          * How many items should be loaded per page
          */
-        private const val ITEMS_PER_PAGE = 100
+        private const val ITEMS_PER_PAGE = 8
     }
 
     private val backendCalls = ArrayMap<Long, RouteCaller<List<PlaidItem>>>()

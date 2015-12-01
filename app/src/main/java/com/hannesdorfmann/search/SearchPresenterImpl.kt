@@ -22,7 +22,7 @@ class SearchPresenterImpl(private val itemsLoaderFactory: SearchItemsLoaderFacto
 
         view?.showLoading()
 
-        subscribe(itemsLoader!!.firstPage(), { // Error handling
+        subscribe(itemsLoader!!.firstPage().map { it ?: emptyList() }, { // Error handling
             view?.showError(it)
         }, { // onNext
             view?.setContentItems(it)
@@ -34,7 +34,7 @@ class SearchPresenterImpl(private val itemsLoaderFactory: SearchItemsLoaderFacto
     override fun searchMore(query: String) {
 
         view?.showLoadingMore(true)
-        subscribe(itemsLoader!!.olderPages(), { // Error handling
+        subscribe(itemsLoader!!.olderPages().map { it ?: emptyList() }, { // Error handling
             view?.showLoadingMore(false)
             view?.showLoadingMoreError(it)
         }, { // onNext

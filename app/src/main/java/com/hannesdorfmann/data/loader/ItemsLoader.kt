@@ -28,15 +28,15 @@ import java.util.*
 class ItemsLoader<T>(protected val router: Router<T>) {
 
 
-    fun firstPage(): Observable<T> {
+    fun firstPage(): Observable<T?> {
         return FirstPage<T>(router.getAllRoutes()).asObservable()
     }
 
-    fun olderPages(): Observable<T> {
+    fun olderPages(): Observable<T?> {
         return OlderPage<T>(router.getAllRoutes()).asObservable()
     }
 
-    fun newestPage(): Observable<T> {
+    fun newestPage(): Observable<T?> {
         return NewestPage<T>(router.getAllRoutes()).asObservable()
     }
 
