@@ -1,7 +1,7 @@
 package com.hannesdorfmann.home;
 
 import com.hannesdorfmann.ApplicationModule;
-import com.hannesdorfmann.data.backend.paging.HomeDribbbleBackendCallFactory;
+import com.hannesdorfmann.data.backend.paging.HomeDribbbleCallerFactory;
 import com.hannesdorfmann.data.loader.router.RouteCallerFactory;
 import com.hannesdorfmann.data.loader.router.Router;
 import com.hannesdorfmann.data.news.ItemsLoader;
@@ -36,7 +36,7 @@ public class HomeModule {
 
     // Create the router
     List<RouteCallerFactory<List<? extends PlaidItem>>> routeCallerFactories = new ArrayList<>(3);
-    routeCallerFactories.add(new HomeDribbbleBackendCallFactory(dribbbleBackend, sourceDao));
+    routeCallerFactories.add(new HomeDribbbleCallerFactory(dribbbleBackend, sourceDao));
 
     Router<List<? extends PlaidItem>> router = new Router<>(routeCallerFactories);
 

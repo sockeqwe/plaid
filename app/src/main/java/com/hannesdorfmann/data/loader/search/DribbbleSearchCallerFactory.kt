@@ -1,6 +1,6 @@
 package com.hannesdorfmann.data.loader.search
 
-import com.hannesdorfmann.data.backend.paging.HomeDribbbleBackendCallFactory
+import com.hannesdorfmann.data.backend.paging.HomeDribbbleCallerFactory
 import com.hannesdorfmann.data.loader.router.RouteCaller
 import com.hannesdorfmann.data.loader.router.RouteCallerFactory
 import io.plaidapp.data.PlaidItem

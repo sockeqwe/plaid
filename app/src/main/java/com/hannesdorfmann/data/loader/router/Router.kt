@@ -26,18 +26,6 @@ class Router<T>(private val routeFactories: List<RouteCallerFactory<T>>) {
 
         Log.d("Test", "Router: found ${callers.size} calls to make")
 
-        /*
-        return Observable.merge(callers).collect(
-                { ArrayList<RouteCaller<T>>() },
-                { completeList, item ->
-                    completeList.addAll(item)
-                }).map { it as List<RouteCaller<T>> } // convert to immutable list, caused by type safety
-                .doOnNext {
-                    Log.d("Test", "Router doOnNext() ${it}")
-                }
-
-        */
-
         return Observable.combineLatest(callers, { calls ->
             val items = ArrayList<RouteCaller<T>>(calls.size)
             calls.forEach {

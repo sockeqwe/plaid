@@ -31,9 +31,10 @@ abstract class Page<T>(val routeCalls: Observable<List<RouteCaller<T>>>) {
         return routeCalls.flatMap { routeCalls ->
 
             backendCallsCount = routeCalls.size
+            failed.set(0)
 
             if (backendCallsCount == 0) {
-
+                // Hacky workaround since empty() doesn't work well with sqlbrite hot observables
                 Observable.just(null)
 
             } else {
@@ -57,7 +58,7 @@ abstract class Page<T>(val routeCalls: Observable<List<RouteCaller<T>>>) {
 
                 // return the created Observable
                 Observable.merge(observables).doOnNext {
-                    Log.d("Test", "merging " + it)
+                    Log.d("Test", "Page merging " + it)
                 }
             }
         }

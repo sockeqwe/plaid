@@ -22,7 +22,7 @@ import java.util.*
  *
  * @author Hannes Dorfmann
  */
-class HomeDribbbleBackendCallFactory(private val backend: DribbbleService, sourceDao: SourceDao) : RouteCallerFactory<List<PlaidItem>> {
+class HomeDribbbleCallerFactory(private val backend: DribbbleService, sourceDao: SourceDao) : RouteCallerFactory<List<PlaidItem>> {
 
     companion object {
         /**
