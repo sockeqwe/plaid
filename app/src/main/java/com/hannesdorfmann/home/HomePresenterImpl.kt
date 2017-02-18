@@ -27,7 +27,7 @@ class HomePresenterImpl(private val itemsLoader: ItemsLoader<List<PlaidItem>>, s
                 },
                 { // onNext
                     if (it.isEmpty()) {
-                        view.showNoFiltersSelected()
+                        view?.showNoFiltersSelected()
                     } else {
                         view?.setContentItems(it)
                         view?.showContent()

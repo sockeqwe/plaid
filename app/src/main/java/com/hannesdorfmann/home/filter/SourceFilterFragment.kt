@@ -42,7 +42,7 @@ class SourceFilterFragment : SourceFilterView, MvpLceViewStateFragment<RecyclerV
         return adapter.filters
     }
 
-    override fun createViewState(): LceViewState<List<SourceFilterPresentationModel>, SourceFilterView>? {
+    override fun createViewState(): LceViewState<List<SourceFilterPresentationModel>, SourceFilterView> {
         return RetainingLceViewState()
     }
 

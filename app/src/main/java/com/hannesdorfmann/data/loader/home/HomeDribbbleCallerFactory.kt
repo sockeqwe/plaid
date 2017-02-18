@@ -1,9 +1,10 @@
-package com.hannesdorfmann.data.backend.paging
+package com.hannesdorfmann.data.loader.home
 
 import android.support.v4.util.ArrayMap
 import android.support.v4.util.SparseArrayCompat
 import android.util.Log
 import com.hannesdorfmann.data.backend.BackendManager
+import com.hannesdorfmann.data.backend.BackendManager.ID
 import com.hannesdorfmann.data.loader.router.RouteCaller
 import com.hannesdorfmann.data.loader.router.RouteCallerFactory
 import com.hannesdorfmann.data.loader.search.DribbbleSearchCallerFactory
@@ -37,7 +38,7 @@ class HomeDribbbleCallerFactory(private val backend: DribbbleService, sourceDao:
 
     init {
         sources = checkedDefer {
-            sourceDao.getSourcesForBackend(BackendManager.ID.DRIBBBLE).share()
+            sourceDao.getSourcesForBackend(ID.DRIBBBLE).share()
         }.doOnNext {
             Log.d("Test", "sources doOnNext ${it}")
         }
@@ -112,25 +113,25 @@ class HomeDribbbleCallerFactory(private val backend: DribbbleService, sourceDao:
 
     val getFollowing = fun(pageOffset: Int, itemsPerPage: Int): Observable<List<PlaidItem>> {
         return backend.getFollowing(pageOffset, itemsPerPage).doOnNext {
-            android.util.Log.d("Test", "getFollowing() doOnNext ${it}")
+            Log.d("Test", "getFollowing() doOnNext ${it}")
         } as Observable<List<PlaidItem>>
     }
 
     val getAnimated = fun(pageOffset: Int, itemsPerPage: Int): Observable<List<PlaidItem>> {
         return backend.getAnimated(pageOffset, itemsPerPage).doOnNext {
-            android.util.Log.d("Test", "getAnimated() doOnNext ${it}")
+            Log.d("Test", "getAnimated() doOnNext ${it}")
         } as Observable<List<PlaidItem>>
     }
 
     val getDebuts = fun(pageOffset: Int, itemsPerPage: Int): Observable<List<PlaidItem>> {
         return backend.getDebuts(pageOffset, itemsPerPage).doOnNext {
-            android.util.Log.d("Test", "getDebuts() doOnNext ${it}")
+            Log.d("Test", "getDebuts() doOnNext ${it}")
         } as Observable<List<PlaidItem>>
     }
 
     val getRecent = fun(pageOffset: Int, itemsPerPage: Int): Observable<List<PlaidItem>> {
         return backend.getRecent(pageOffset, itemsPerPage).doOnNext {
-            android.util.Log.d("Test", "getRecent() doOnNext ${it}")
+            Log.d("Test", "getRecent() doOnNext ${it}")
         } as Observable<List<PlaidItem>>
     }
 
@@ -149,12 +150,13 @@ class HomeDribbbleCallerFactory(private val backend: DribbbleService, sourceDao:
 
             return Observable.defer<List<PlaidItem>> {
                 try {
-                    Observable.just(DribbbleSearch.search(queryString, DribbbleSearch.SORT_RECENT, pageOffset) as List<PlaidItem>)
+                    Observable.just(
+                        DribbbleSearch.search(queryString, DribbbleSearch.SORT_RECENT, pageOffset) as List<PlaidItem>)
                 } catch(e: Exception) {
                     throw RuntimeException(e)
                 }
             }.doOnNext {
-                android.util.Log.d("Test", "Dribbble Search(${queryString}) doOnNext ${it}")
+                Log.d("Test", "Dribbble Search(${queryString}) doOnNext ${it}")
             }
         }
     }

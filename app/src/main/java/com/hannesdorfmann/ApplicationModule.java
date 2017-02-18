@@ -36,8 +36,12 @@ import retrofit.client.OkClient;
     this.context = context.getApplicationContext();
 
     SourceDaoImpl sDao = new SourceDaoImpl();
-    DaoManager manager = new DaoManager(this.context, "Sources", 1, sDao);
-    manager.setLogging(true);
+    DaoManager manager = DaoManager.with(this.context)
+        .databaseName("Sources")
+        .version(1)
+        .add(sDao)
+        .logging(true)
+        .build();
 
     sourceDao = sDao;
   }

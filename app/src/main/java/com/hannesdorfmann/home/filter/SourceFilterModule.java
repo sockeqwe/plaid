@@ -27,12 +27,14 @@ public class SourceFilterModule {
       @ApplicationModule.ApplicationContext Context context, SourceDao sourceDao,
       BackendManager backendManager) {
 
-    SourceToPresentationModelMapper presentationModelMapper =
+    final SourceToPresentationModelMapper presentationModelMapper =
         new SourceToPresentationModelMapper(context.getApplicationContext(),
             backendManager.getGetBackendIconRes());
 
-    SchedulerTransformer<List<? extends SourceFilterPresentationModel>> scheduler =
+    SchedulerTransformer<List<SourceFilterPresentationModel>> scheduler =
         new AndroidSchedulerTransformer<>();
-    return new SourceFilterPresenterImpl(sourceDao, presentationModelMapper, scheduler);
+
+    return new SourceFilterPresenterImpl(sourceDao, presentationModelMapper.getMapperFunc(),
+        scheduler);
   }
 }

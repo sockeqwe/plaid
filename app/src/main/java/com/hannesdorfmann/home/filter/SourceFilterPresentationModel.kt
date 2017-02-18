@@ -17,10 +17,10 @@ data class SourceFilterPresentationModel(
 /**
  * Maps a list of [Source] to  a list of [SourceFilterPresentationModel]
  */
-class SourceToPresentationModelMapper(private val context: Context, private val backendToIconMap: (Int) -> Int) : (List<Source>) -> List<SourceFilterPresentationModel> {
+class SourceToPresentationModelMapper(private val context: Context, private val backendToIconMap: (Int) -> Int) {
 
 
-    override fun invoke(sources: List<Source>): List<SourceFilterPresentationModel> {
+    val mapperFunc = fun (sources: List<Source>): List<SourceFilterPresentationModel> {
         val presentationModels = ArrayList<SourceFilterPresentationModel>()
         Log.d("Test", "Mapping to presentation model: ${sources}")
 

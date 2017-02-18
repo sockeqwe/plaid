@@ -8,7 +8,7 @@ import io.plaidapp.data.PlaidItem
  */
 class HomeViewState : ViewState<HomeView> {
 
-    private enum class State {
+    enum class State {
         SHOW_LOADING, SHOW_ERROR, SHOW_CONTENT, SHOW_NO_FILTERS
     }
 

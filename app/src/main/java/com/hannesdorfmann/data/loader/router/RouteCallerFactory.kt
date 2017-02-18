@@ -20,7 +20,7 @@ interface RouteCallerFactory<O> {
     /**
      * Little helper function to create an observable deferred with checked exceptions
      */
-    fun checkedDefer<T>(observable: () -> Observable<T>): Observable<T> {
+    fun <T> checkedDefer(observable: () -> Observable<T>): Observable<T> {
 
         return Observable.defer<T> {
             try {

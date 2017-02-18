@@ -1,7 +1,7 @@
 package com.hannesdorfmann.home;
 
 import com.hannesdorfmann.ApplicationModule;
-import com.hannesdorfmann.data.backend.paging.HomeDribbbleCallerFactory;
+import com.hannesdorfmann.data.loader.home.HomeDribbbleCallerFactory;
 import com.hannesdorfmann.data.loader.router.RouteCallerFactory;
 import com.hannesdorfmann.data.loader.router.Router;
 import com.hannesdorfmann.data.news.ItemsLoader;
@@ -31,16 +31,19 @@ public class HomeModule {
   @Provides @Singleton HomePresenter provideSearchPresenter(SourceDao sourceDao,
       DribbbleService dribbbleBackend) {
 
-    SchedulerTransformer<List<? extends PlaidItem>> scheduler =
+    SchedulerTransformer<List<PlaidItem>> scheduler =
         new AndroidSchedulerTransformer<>();
 
+    HomeDribbbleCallerFactory homeDribbbleCallerFactory =
+        new HomeDribbbleCallerFactory(dribbbleBackend, sourceDao);
+
     // Create the router
-    List<RouteCallerFactory<List<? extends PlaidItem>>> routeCallerFactories = new ArrayList<>(3);
-    routeCallerFactories.add(new HomeDribbbleCallerFactory(dribbbleBackend, sourceDao));
+    List<RouteCallerFactory<List<PlaidItem>>> routeCallerFactories = new ArrayList<>(3);
+    //routeCallerFactories.add();
 
-    Router<List<? extends PlaidItem>> router = new Router<>(routeCallerFactories);
+    Router<List<PlaidItem>> router = new Router<>(routeCallerFactories);
 
-    ItemsLoader<List<? extends PlaidItem>> itemsLoader = new ItemsLoader<>(router);
+    ItemsLoader<List<PlaidItem>> itemsLoader = new ItemsLoader<>(router);
 
     return new HomePresenterImpl(itemsLoader, scheduler);
   }

@@ -49,6 +49,6 @@ class SearchPresenterImpl(private val itemsLoaderFactory: SearchItemsLoaderFacto
         // Unsubscribe any previous search subscriptions
         unsubscribe()
 
-        view.showSearchNotStarted()
+        view?.showSearchNotStarted()
     }
 }

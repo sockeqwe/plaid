@@ -27,8 +27,8 @@ class SourceFilterPresenterImpl(val sourceDao: SourceDao, val presentationModelM
                 },
                 // onNext
                 {
-                    view.setData(it)
-                    view.showContent()
+                    view?.setData(it)
+                    view?.showContent()
                 }
         )
     }

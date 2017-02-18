@@ -16,6 +16,7 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.fernandocejas.frodo'
 
 // query git for the SHA, Tag and commit count. Use these to automate versioning.
@@ -25,13 +26,13 @@ def gitCommitCount = 100 + Integer.parseInt(
     'git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
 android {
-  compileSdkVersion 23
-  buildToolsVersion '23.0.2'
+  compileSdkVersion 25
+  buildToolsVersion '25.0.2'
 
   defaultConfig {
     applicationId "io.plaidapp"
     minSdkVersion 21
-    targetSdkVersion 23
+    targetSdkVersion 25
     versionCode gitCommitCount
     versionName gitTag
     archivesBaseName = "plaid-${versionName}"
@@ -62,12 +63,16 @@ android {
 
 repositories {
   jcenter()
+
+  maven {
+    url "https://oss.sonatype.org/content/repositories/snapshots/"
+  }
 }
 
 ext {
-  supportLibVersion = '23.1.1'
-  sqlbriteDao = '0.4.1'
-  dagger = '1.2.2'
+  supportLibVersion = '25.1.1'
+  sqlbriteDao = '0.6.1'
+  dagger = '1.2.5'
 }
 
 dependencies {
@@ -98,7 +103,7 @@ dependencies {
   compile 'com.hannesdorfmann.mosby:viewstate:2.0.0'
 
   // Database
-  compile 'com.squareup.sqlbrite:sqlbrite:0.4.1'
+  compile 'com.squareup.sqlbrite:sqlbrite:0.6.1'
   compile "com.hannesdorfmann.sqlbrite:dao:${sqlbriteDao}"
   compile "com.hannesdorfmann.sqlbrite:annotations:${sqlbriteDao}"
   kapt "com.hannesdorfmann.sqlbrite:object-mapper:${sqlbriteDao}"
@@ -114,7 +119,7 @@ dependencies {
 
 
 buildscript {
-  ext.kotlin_version = '1.0.0-beta-2423'
+  ext.kotlin_version = '1.0.6'
   repositories {
     mavenCentral()
   }

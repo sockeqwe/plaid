@@ -31,7 +31,7 @@ public class SearchModule {
   @Provides @Singleton SearchPresenter provideSearchPresenter(
       SearchItemsLoaderFactory itemsLoaderFactory) {
 
-    SchedulerTransformer<List<? extends PlaidItem>> scheduler = new AndroidSchedulerTransformer<>();
+    SchedulerTransformer<List<PlaidItem>> scheduler = new AndroidSchedulerTransformer<>();
     return new SearchPresenterImpl(itemsLoaderFactory, scheduler);
   }
 }
